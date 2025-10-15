@@ -3,24 +3,21 @@ import Integrations from "~/components/homepage/integrations";
 import { api } from "../../convex/_generated/api";
 import type { Route } from "./+types/home";
 import { Suspense, lazy } from 'react';
-import { ContentSkeleton, FeatureSkeleton, PricingSkeleton } from '~/components/ui/skeleton';
+import { ContentSkeleton, FeatureSkeleton } from '~/components/ui/skeleton';
 
 // Lazy load components below the fold
 const ContentSection = lazy(() => import("~/components/homepage/content"));
 const CoreFeaturesSection = lazy(() => import("~/components/homepage/core-features"));
-const ConvexComparison = lazy(() => import("~/components/homepage/convex-comparison").then(m => ({ default: m.ConvexComparison })));
-const Pricing = lazy(() => import("~/components/homepage/pricing"));
 const InhouseTools = lazy(() => import("~/components/homepage/inhouse-tools"));
-const FAQ = lazy(() => import("~/components/homepage/faq"));
 const Footer = lazy(() => import("~/components/homepage/footer"));
 
 export function meta({}: Route.MetaArgs) {
-  const title = "Kaizen - Launch Your SAAS Quickly";
+  const title = "Tajweed Quiz - Master Your Quran Recitation";
   const description =
-    "This powerful starter kit is designed to help you launch your SAAS application quickly and efficiently.";
-  const keywords = "Kaizen, SAAS, Launch, Quickly, Efficiently";
-  const siteUrl = "https://www.kaizen.codeandcreed.tech/";
-  const imageUrl = "/kaizen.svg";
+    "Learn and practice Tajweed rules with interactive quizzes. Perfect your Quran recitation through focused, rule-specific practice sessions.";
+  const keywords = "Tajweed, Quran, Recitation, Islamic Learning, Arabic, Prayer, Tilawah";
+  const siteUrl = "https://www.tajweed-quiz.com/";
+  const imageUrl = "/tajweed-logo.svg";
 
   return [
     { title },
@@ -37,7 +34,7 @@ export function meta({}: Route.MetaArgs) {
     { property: "og:image:width", content: "1200" },
     { property: "og:image:height", content: "630" },
     { property: "og:url", content: siteUrl },
-    { property: "og:site_name", content: "Kaizen" },
+    { property: "og:site_name", content: "Tajweed Quiz" },
 
     // Twitter Card
     { name: "twitter:card", content: "summary_large_image" },
@@ -51,7 +48,7 @@ export function meta({}: Route.MetaArgs) {
       name: "keywords",
       content: keywords,
     },
-    { name: "author", content: "Kaizen" },
+    { name: "author", content: "Tajweed Quiz" },
     { name: "favicon", content: imageUrl },
   ];
 }
@@ -113,12 +110,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6"><FeatureSkeleton /><FeatureSkeleton /><FeatureSkeleton /></div>}>
         <CoreFeaturesSection />
       </Suspense>
-      <Suspense fallback={<ContentSkeleton />}>
-        <ConvexComparison />
-      </Suspense>
-      <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6"><PricingSkeleton /><PricingSkeleton /></div>}>
-        <Pricing loaderData={loaderData} />
-      </Suspense>
       <div className="my-6 flex justify-center">
         <div
           aria-hidden
@@ -129,9 +120,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       </div>
       <Suspense fallback={<ContentSkeleton />}>
         <InhouseTools />
-      </Suspense>
-      <Suspense fallback={<ContentSkeleton />}>
-        <FAQ />
       </Suspense>
       <Suspense fallback={<div className="h-32 bg-muted" />}>
         <Footer />

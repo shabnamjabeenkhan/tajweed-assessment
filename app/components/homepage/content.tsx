@@ -4,34 +4,33 @@ import { Link } from "react-router";
 
 export default function ContentSection() {
   return (
-    <section id="content" className="py-16 md:py-32">
+    <section id="features" className="py-16 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid gap-6 md:grid-cols-2 md:gap-12">
           <h2 className="text-4xl font-medium">
-            Type-safe, AI-friendly codebase.
+            Learn Tajweed Rules Effectively
           </h2>
           <div className="space-y-6">
             <p>
-              Built end-to-end in TypeScript.
+              <span className="font-bold">Focused Learning:</span> Each quiz targets a specific Tajweed rule, helping you master one concept at a time.
             </p>
             <p>
-              Every prop, query and mutation is fully typed <em>across</em> the stack. Autocomplete just works and refactors are painless.
+              Practice with <span className="font-bold">10 carefully crafted questions</span> per rule.
+              Skip questions you're unsure about or mark them as "I don't know" for honest self-assessment.
             </p>
             <p>
-              Powered by <span className="font-bold">Convex</span>, your entire
-              backend—database, storage, cron jobs, and auth hooks—is expressed
-              as plain code. No YAML, no dashboards, no hidden state.
-            </p>
-
-            <p>
-              Large-language models can read the source tree and generate new
-              backend logic in seconds, giving you accurate scaffolds for any
-              use-case without bolting on extra services.
+              Get <span className="font-bold">instant feedback</span> on your performance.
+              See which areas need improvement and track your progress over time.
             </p>
 
             <p>
-              <span className="font-bold">One repo, one language.</span> Zero
-              third-party glue.
+              Build learning streaks and maintain consistency in your Tajweed practice.
+              Review detailed explanations for every question to deepen your understanding.
+            </p>
+
+            <p>
+              <span className="font-bold">Completely free, ad-free learning.</span>
+              Focus on what matters most - improving your Quran recitation.
             </p>
             <Button
               asChild
@@ -39,8 +38,8 @@ export default function ContentSection() {
               size="sm"
               className="gap-1 pr-1.5"
             >
-              <Link to="https://www.convex.dev/" target="_blank" rel="noopener noreferrer">
-                <span>Learn More About Convex</span>
+              <Link to="/dashboard">
+                <span>Start Your First Quiz</span>
                 <ChevronRight className="size-2" />
               </Link>
             </Button>
