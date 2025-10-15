@@ -1,0 +1,192 @@
+---
+title: 'Production Deployment ✅'
+description: Complete guide for deploying your Web Application to production
+icon: Rocket
+---
+
+<Note>
+  Last updated on: 12th October 2025
+</Note>
+
+<Warning>
+  You need to have already purchased a domain to be fully configure your Web App for production.
+</Warning>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record 2 videos for this page (1 for Vercel and 1 for Railway)
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+You can deploy your app to either Vercel or Railway.
+
+<Note>
+  Vercel supports Convex Preview Environments, giving each PR a live preview link. This is super helpful for reviewing PRs if you're working in a team.
+</Note>
+
+<Cards>
+  <Card
+    href="/docs/building-your-product/setup/12-team-worklow"
+    title="See our Team Workflow Guide"
+    description="Set up Preview Environments to help you review PRs quickly"
+  />
+</Cards>
+
+## Shared Deployment Steps
+
+### 1. Configure Clerk
+
+1. Go to your Clerk Dashboard
+2. Clone your Development Application
+3. Set the domain to your purchased domain
+4. Navigate to `Configure` → Scroll down to the `Developers` section → `Domains`
+5. Configure your domain's DNS settings based on what Clerk asks for
+
+<Note>
+  Once you're done, you'll need to wait a few minutes for Clerk to issue SSL certificates and verify its Frontend and Accounts APIs.
+</Note>
+
+6. In the same `Developers` section in the left sidebar → Go to the `API Keys` section
+7. Click the dropdown menu and select `React Router`
+
+8. Copy your `VITE_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the container shown
+
+```bash
+VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+```
+
+### 2. Configure Convex
+
+1. Go to your Convex Dashboard
+2. Switch to the 'Production' environment
+3. Navigate to the your Clerk Production Instance
+4. Set the `VITE_CLERK_FRONTEND_API_URL` environment variable to the Issuer URL from your Production Clerk JWT template
+
+### 3. Configure Polar
+
+1. Go to your Production Polar Dashboard (polar.sh)
+2. Create the same products as your sandbox environment
+3. Create the same environment variables as your sandbox environment:
+
+- `POLAR_ACCESS_TOKEN`: Navigate to `Settings` → `General` → Scroll down to the `Developers` section → `New Token` (All scopes, no expiration) → Copy the token
+- `POLAR_ORGANIZATION_ID`: Navigate to `Settings` → At the top in the `Profile` section → copy the `Identifier`
+- `POLAR_SERVER`: `production`
+- `POLAR_WEBHOOK_SECRET`: Navigate to `Settings` → `Webhooks` → Click `Add Endpoint` → URL: `https://your-prod-name.convex.site/payments/webhook` → Format: **Raw** → Select all events → Generate secret and copy it
+
+<Note>
+  Reminder: When creating the `POLAR_WEBHOOK_SECRET`, use `https://your-prod-name.convex.site/payments/webhook` as the URL.
+</Note>
+
+4. Add the following environment variables to your Convex Production environment variables:
+ 
+```bash
+- POLAR_ACCESS_TOKEN=polar_...
+- POLAR_ORGANIZATION_ID=...
+- POLAR_SERVER=production
+- POLAR_WEBHOOK_SECRET=whsec_...
+- FRONTEND_URL=https://your-purchased-domain.com
+```
+
+### 4. Configure Resend
+
+Add the following environment variables to your Convex Production environment variables:
+
+```bash
+RESEND_API_KEY=the_same_value_as_your_Development_environment_variable
+RESEND_WEBHOOK_SECRET=the_same_value_as_your_Development_environment_variable
+```
+
+## Vercel
+
+1. Sign up for a Vercel account (if you don't already have one) and then go to your Vercel Dashboard
+2. Click on `Add New...` → `Project`
+3. Click `Import` for your GitHub repository
+4. Set the Build command to:
+```bash
+bunx convex deploy --cmd 'bun run build'
+```
+
+5. Set Environment Variables:
+
+Open the `Environment Variables` accordion and add the following environment variables (under the `Production` Environment):
+
+```bash
+- VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+- CLERK_SECRET_KEY=sk_live_...
+- CONVEX_DEPLOYMENT=prod:your-deployment
+- VITE_CONVEX_URL=https://your-prod-name.convex.cloud
+- FRONTEND_URL=https://your-purchased-domain.com
+```
+
+6. Create a `CONVEX_DEPLOY_KEY` by navigating to your Convex Dashboard → `Settings` → `URL & Deploy Key` → `Show development credentials` → `+ Generate Production Deploy Key`→  Name it `prod` or any other name you prefer → Copy the key
+
+Add this to the `Environment Variables`
+
+7. Click `Deploy`
+
+The app will build and deploy Convex automatically.
+
+8. Configure Custom Domain
+
+- Go to your Project
+- Click on `Settings`
+- Click on `Domains`
+- Click on `Add Domain`
+- Add your purchased domain
+- Click on `Add`
+- Configure your domain's DNS settings based on what Vercel asks for
+
+Your App is now live at `https://your-purchased-domain.com` with SSL enabled 🎉
+
+## Railway
+
+1. Sign up for a Railway account (if you don't already have one) and then go to your Railway Dashboard
+2. Click `+ New`
+3. Click on `Github Repository`
+4. Search and select your repository
+5. Railway will automatically detect the `Dockerfile` and deploy the application
+6. Navigate to the `Variables` section and add the following environment variables:
+
+```bash
+- `VITE_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `CONVEX_DEPLOYMENT`: `prod:your-deployment`
+- `VITE_CONVEX_URL`: `https://your-prod-name.convex.cloud`
+- `FRONTEND_URL`: `https://your-purchased-domain.com`
+
+7. Create a `CONVEX_DEPLOY_KEY` by navigating to your Convex Dashboard → `Settings` → `URL & Deploy Key` → `Show development credentials` → `+ Generate Production Deploy Key`→  Name it `prod` or any other name you prefer → Copy the key
+
+Add this to the `Environment Variables`
+
+8. Re-deploy the application
+
+9. Configure Custom Domain
+
+- Go to your Project
+- Click on `Settings`
+- Click on `Networking`
+- Click on `+ Custom Domain`
+- Add your purchased domain
+- Configure your domain's DNS settings based on what Railway asks for
+
+Your App is now live at `https://your-purchased-domain.com` with SSL enabled 🎉
+
+## Cloudflare Workers
+
+<Note>
+  Coming soon...
+</Note>
+
+## Next Steps
+
+With production deployment complete, your app is live and ready for users!
+
+You can continue to work on your app and deploy new changes to production automatically. Everything will just work.
+
+<Note>
+  For future environment variables, the rule of thumb is that if you need to access it from the client side, you need to add it one of the above (Vercel or Railway) environment variables. If you need to access it from the server side, you need to add it to the Convex environment variables.
+</Note>

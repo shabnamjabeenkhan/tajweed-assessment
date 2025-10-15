@@ -1,0 +1,370 @@
+---
+title: 'MVP Documentation ✅'
+description: Document your MVP (Idea, Architecture, Cost Estimation, User Flows, and Database Design)
+icon: FileText
+---
+
+<Callout type="info">
+  Last updated on: 9th October 2025
+</Callout>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Cards, Card } from 'fumadocs-ui/components/card';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+
+## Why Documentation Matters
+
+In the age of AI, documentation is no longer optional - it's critical. Without it, you lose context, repeat mistakes, and confuse yourself and your AI assistants as your codebase grows.
+
+**Without docs:**
+- ❌ Lose context between sessions
+- ❌ Repeat the same mistakes
+- ❌ Confuse AI assistants with missing context
+- ❌ Struggle to onboard team members
+- ❌ Forget why you made decisions
+
+**With good docs:**
+- ✅ Better AI assistance (LLMs will love this context!)
+- ✅ Faster Developer onboarding (if you want to hire in the future)
+- ✅ Decision history (easy for you and an LLM to understand why decisions were made)
+- ✅ Reduced bugs and rework (easier to debug and understand why things are the way they are)
+
+<Callout type="info">
+  **You'll be using the "Project Documentation" tab in this docs site!** 📁
+
+  All your project documentation lives here in the Fumadocs-powered documentation system. You'll be keeping this updated as you build.
+
+  <Cards>
+    <Card
+      title="Project Documentation"
+      description="All your project documentation lives here in the Fumadocs-powered documentation system. You'll be keeping this updated as you build."
+      href="/docs/project-documentation"
+    />
+  </Cards>
+</Callout>
+
+The fastest way to create comprehensive MVP documentation is to work with an AI agent across **5 focused conversations**. Each conversation targets a specific aspect of your product, ensuring nothing gets missed.
+
+### Prerequisites
+
+Before starting, ensure you have:
+<Cards>
+  <Card
+    title="Cursor IDE installed + Pro Subscription"
+    href="https://www.cursor.so/"
+    description="Ensure you have Cursor IDE and a Pro Subscription so you can use the premium models like GPT-5-High."
+  />
+  <Card
+    title="A Validated Product Idea"
+    href="/docs/company-building/idea-validation"
+    description="You should an idea that has been validated through our recommended Idea Validation process."
+  />
+</Cards>
+
+<Note>
+  If you prefer to use Claude Code or another AI agent, feel free to do so. We simply recommend using Cursor and the GPT-5-High model for the best experience.
+</Note>
+
+### The 5-step Documentation Framework
+
+We'll be following a comprehensive framework to help you document your product and all the important decisions you'll be making prior to actually building it, to make it easier for you and your AI assistants to execute on your idea.
+
+<Cards>
+  <Card title="1. Product Idea, Vision & Strategy" description="Define your idea, target audience, and core features" />
+  <Card title="2. Technical Architecture" description="Design system architecture and tech stack decisions" />
+  <Card title="3. Cost Estimation" description="Calculate Tech Stack related operational costs (API calls, Database, etc.)" />
+  <Card title="4. Database & Data Design" description="Plan data models, relationships, and schema" />
+  <Card title="5. UI/UX + User Flows" description="Map user journeys and interaction patterns" />
+</Cards>
+
+---
+
+## 1. Product Idea, Vision & Strategy
+
+**Goal**: Define your product vision, target audience, core features, success metrics, competitive landscape, implementation planning, and any external dependencies you'll need.
+
+**Duration**: `20-25 minutes`
+
+**Model**: `gpt-5-high`
+
+Open a new Agent tab in Cursor and use this prompt:
+
+```markdown
+I'm building an MVP and need help documenting my product vision and strategy. 
+
+**IMPORTANT**: Before we start, please:
+1. **Check the README.md file** to understand my current tech stack
+2. **Perform real-time web research** on current pricing, features, and capabilities of my tech stack components
+3. **Read the existing Project Documentation → Idea page** (index.mdx) to understand what's already documented
+
+**My Product Idea**: [Describe your product idea in 2-3 sentences]
+
+**Current Understanding**: [What you know about your target market, competitors, etc.]
+
+Please help me create comprehensive documentation for the "Idea" page in my Project Documentation. I want to document:
+
+1. **Problem Statement** - What problem am I solving?
+2. **Solution Overview** - How does my product solve it?
+3. **Target Audience** - Who are my users?
+4. **Core Features** - What features do I need for MVP?
+5. **Competitive Analysis** - How am I different?
+6. **Expected Scale** - How many users do I expect to have?
+7. **3rd-party libraries/providers/APIs** - What external libraries/providers/APIs do I need to use (other than what my current tech stack provides)?
+8. **Pricing Model Decision** - Subscription vs One-time vs Hybrid (justify with web research and product type)
+9. **Implementation Planning** - Development phases, timeline estimation, resource requirements, risk assessment, success metrics, launch strategy
+
+Use this decision framework when selecting the pricing model:
+
+- Recurring Subscriptions
+  - Use when you provide ongoing value
+  - Examples: SaaS tools used regularly, monitoring services, continuous access platforms
+  - Benefits: Predictable revenue, higher LTV, easier to scale
+
+- One-Time Payments
+  - Use when value is delivered once
+  - Examples: Digital downloads, one-off transformations, limited-time access
+  - Benefits: Simpler to manage, no recurring obligations, clear value proposition
+
+- Hybrid Models
+  - Combine both payment types
+  - Examples: Setup fee + monthly access, one-time purchase + optional subscription support
+  - Benefits: Maximizes revenue opportunities, caters to preferences, flexible strategy
+
+- Product Type Considerations
+  - Transformation Products → bias to one-time (e.g., fitness apps, course platforms)
+  - Utility Products → bias to subscription (e.g., budget trackers, productivity tools)
+
+- Currency & Pricing Psychology
+  - Align currencies with target demographics
+  - Use psychological pricing (e.g., $29 vs $30)
+
+**Output**: A clear recommendation with rationale and sources. Also note downstream impacts on database schema, pricing page UX, and payments provider configuration.
+
+Make sure to include the following section in Project Documentation → Idea (index.mdx):
+
+**Pricing Model Decision**
+
+- Decision: [Subscription | One-time | Hybrid]
+- Rationale: [2-4 bullets citing product type and web research]
+- Product Type: [Transformation | Utility | Mixed]
+- Currency & Pricing: [Primary currency and psychological price points]
+- Database Impact: [Keep/remove: subscriptions tables, one-time payments tables, and invoice fields?]
+- Provider/Webhooks: [Which flows are needed and why]
+
+This section must be present in index.mdx so downstream docs (architecture, database, payments) can reference it.
+
+**CRITICAL**: When we're done, I need you to **replace the entire content** of the Project Documentation → Idea page (index.mdx) with our final documentation, not just provide text to copy.
+
+Before you do that, please ask me clarifying questions and help me think through each area thoroughly. Use real-time web research to ensure accuracy of current market conditions, competitor pricing, and tech stack capabilities.
+```
+
+## 2. Technical Architecture
+
+**Goal**: Design system architecture, use specific features of your chosen tech stack, and understand how any 3rd party libraries/providers/APIs will fit into your system.
+
+**Duration**: `20-25 minutes`
+
+**Model**: `gpt-5-high`
+
+Open a new Agent tab in Cursor and use this prompt:
+
+```markdown
+Based on my product idea and vision (See the 'Idea' page in my Project Documentation - index.mdx), I now need help designing and documenting the technical architecture.
+
+**IMPORTANT**: Before we start, please:
+1. **Check the README.md file** to understand my current tech stack
+2. **Read the existing Project Documentation → Idea page** (index.mdx) to understand the product vision and pricing model decision
+3. **Perform real-time web research** on current pricing, features, and capabilities of my tech stack components
+4. **Research current best practices** for my specific tech stack combination
+
+Please help me design a comprehensive technical architecture, using mermaid diagrams. I want to document:
+
+1. **System Overview** - High-level architecture diagram
+2. **Tech Stack Decisions** - Frontend, backend, database, etc. (based on my current stack - see this codebase's README.md file for more details)
+3. **Tech Stack Specific Features (see this codebase's README.md file for more details)** - Serverless functions, cron jobs, real-time features, etc.
+4. **Payments Architecture** - Based on the chosen pricing model (subscription vs one-time vs hybrid), outline provider flows, webhooks, and data sync responsibilities
+5. **Data Flow** - How data moves through the system
+6. **API Design** - Key endpoints and data structures
+7. **Security Considerations** - Authentication, authorization, data protection
+8. **Performance & Scalability** - How to handle growth
+9. **Infrastructure** - Hosting, deployment, monitoring
+
+**CRITICAL**: When we're done, I need you to **replace the entire content** of the Project Documentation → Architecture page (architecture.mdx) with our final documentation, not just provide text to copy.
+
+Before you do that, please ask me clarifying questions and help me think through each area thoroughly. Use real-time web research to ensure accuracy of current tech stack capabilities, security considerations, and performance & scalability best practices.
+
+Use real-time web research (if you need to) to ensure accuracy of current tech stack capabilities, pricing models, and architectural best practices. Ask clarifying questions about my technical requirements and constraints.
+```
+
+## 3. Cost Estimation
+
+**Goal**: Calculate tech stack operational costs, profit margins, and revenue expectations at different user scales.
+
+**Duration**: `15-20 minutes`
+
+**Model**: `gpt-5-high`
+
+Open a new Agent tab in Cursor and use this prompt:
+
+```markdown
+Based on my product idea and technical architecture (See the 'Idea' and 'Architecture' pages in my Project Documentation), I now need help calculating operational costs and revenue projections.
+
+**IMPORTANT**: Before we start, please:
+1. **Check the README.md file** to understand my current tech stack
+2. **Read the existing Project Documentation → Idea page** (index.mdx) to understand the product vision, pricing model, and expected scale
+3. **Read the existing Project Documentation → Architecture page** (architecture.mdx) to understand the technical stack and infrastructure choices
+5. **Perform real-time web research** on current pricing for ALL components of my tech stack
+
+Please help me create comprehensive cost estimation documentation. I want to document:
+
+1. **Tech Stack Operational Costs** - Monthly costs for hosting, databases, APIs, third-party services
+2. **Revenue Projections** - Based on pricing model and expected user growth
+3. **Profit Margins** - At different user scales:
+   - 10 monthly active users
+   - 100 monthly active users  
+   - 1,000 monthly active users
+   - 10,000 monthly active users
+4. **Break-even Analysis** - When the product becomes profitable
+5. **Scaling Costs** - How costs increase with user growth
+6. **Cost Optimization Strategies** - Ways to reduce operational costs
+
+**My Product**: See the existing Project Documentation → Idea page (index.mdx) for the product description
+**Tech Stack**: See the existing Project Documentation → Architecture page (architecture.mdx) for tech stack details
+**Pricing Model**: See the existing Project Documentation → Idea page (index.mdx) for pricing model decision
+
+**CRITICAL**: When we're done, I need you to **replace the entire content** of the Project Documentation → Cost Estimation page (cost-estimation.mdx) with our final documentation, not just provide text to copy.
+
+Before you do that, please ask me clarifying questions and help me think through each area thoroughly. Use real-time web research to ensure accuracy of current pricing for all tech stack components, hosting costs, third-party service fees, and market rates.
+```
+
+---
+
+## 4. Database & Data Design
+
+**Goal**: Plan data models, relationships, and database schema
+
+**Duration**: `20-25 minutes`
+
+**Model**: `gpt-5-high`
+
+Open a new Agent tab in Cursor and use this prompt:
+
+Have your **Product Vision**, **Architecture**, and **User Flows** ready
+
+```markdown
+I've defined my product vision, architecture, and user flows. Now I need help designing the database schema and data models.
+
+**IMPORTANT**: Before we start, please:
+1. **Check the README.md file** to understand my current tech stack
+2. **Read the existing Project Documentation → Idea page** (index.mdx) to understand the product vision, core features, and pricing model decision
+3. **Read the existing Project Documentation → Architecture page** (architecture.mdx) to understand the technical context and database choice
+4. **Read the existing Project Documentation → User Flows page** (user-flows.mdx) to understand user interactions and data requirements
+6. **Perform real-time web research** on current pricing, features, and capabilities of my database technology
+7. **Research current best practices** for my specific database technology
+
+**My Product**: See the existing Project Documentation → Idea page (index.mdx) for the product description
+**Core Features**: See the existing Project Documentation → Idea page (index.mdx) for core features list
+**User Flows**: See the existing Project Documentation → User Flows page (user-flows.mdx) for user interactions
+**Tech Stack**: See the existing Project Documentation → Architecture page (architecture.mdx) for database choice
+
+Please help me create comprehensive database documentation. I want to document:
+
+1. **Data Models** - Core entities and their properties
+2. **Relationships** - How entities connect to each other
+3. **Schema Design** - Tables, fields, types, constraints
+4. **Data Flow** - How data is created, updated, deleted
+5. **Indexing Strategy** - Performance optimization
+6. **Data Validation** - Input validation and business rules
+7. **Migration Strategy** - How to evolve the schema over time
+8. **Backup & Recovery** - Data protection strategies
+9. **Payments Schema Plan** - Reflect the chosen pricing model:
+   - If one-time only → remove subscription tables and `subscription_id` from invoices
+   - If subscription only → remove one-time payment tables and fields
+   - If hybrid → keep both sets and define clear relations and invariants
+
+**CRITICAL**: When we're done, I need you to **replace the entire content** of the Project Documentation → Database Design page (database-design.mdx) with our final documentation, not just provide text to copy.
+
+Use real-time web research to ensure accuracy of current database capabilities, pricing models, and performance best practices. Ask clarifying questions about data requirements, relationships, and performance needs.
+
+Before you do that, please ask me clarifying questions and help me think through what data models, relationships, and schema are needed for my product.
+```
+
+---
+
+## 5. UI/UX + User Flows
+
+**Goal**: Map user journeys and design interaction patterns
+
+**Duration**: `15-20 minutes`
+
+**Model**: `gpt-5-high`
+
+Open a new Agent tab in Cursor and use this prompt:
+
+Have your **Product Vision** and **Architecture** ready
+
+```markdown
+I've defined my product vision and technical architecture. Now I need help designing the user experience and interaction flows.
+
+**IMPORTANT**: Before we start, please:
+1. **Check the README.md file** to understand my current tech stack
+2. **Read the existing Project Documentation → Idea page** (index.mdx) to understand the product vision, target audience, and core features
+3. **Read the existing Project Documentation → Architecture page** (architecture.mdx) to understand the technical context and payments architecture
+5. **Research current UX best practices** for my specific tech stack and industry
+6. **Research intuitive UI components** that would be perfect for my specific product type and use case
+7. **Study dashboard design patterns** for similar products in my industry
+
+**My Product**: See the existing Project Documentation → Idea page (index.mdx) for the product description
+**Target Users**: See the existing Project Documentation → Idea page (index.mdx) for target audience details
+**Core Features**: See the existing Project Documentation → Idea page (index.mdx) for core features list
+**Technical Stack**: See the existing Project Documentation → Architecture page (architecture.mdx) for technical stack details
+
+Please help me create comprehensive user flow documentation. I want to document:
+
+1. **Primary User Flows** - Main user journeys (onboarding, core feature usage)
+2. **Secondary Flows** - Supporting interactions (settings, notifications, etc.)
+3. **Error & Edge Cases** - What happens when things go wrong
+4. **Mobile vs Desktop** - Responsive behavior differences
+5. **Conversion Funnel** - Where users might drop off
+6. **User Personas & Flows** - Different user types and their paths
+7. **Accessibility Considerations** - Ensuring inclusive design
+8. **Intuitive UI Components** - Specific components that would make the app feel super intuitive
+9. **Dashboard Design** - Core logic pages and dashboard layout for maximum usability
+10. **Wireframes** - Visual mockups of key screens and user flows
+11. **Onboarding Flow** - Whether onboarding is needed and how to make it seamless and intuitive
+
+**SPECIFIC REQUIREMENTS**:
+- **Research and recommend** specific UI components (tables, charts, forms, navigation, etc.) that would be perfect for my product type
+- **Design wireframes** using ASCII art or text-based layouts for key screens
+- **Focus on dashboard design** - how should the main dashboard be organized for maximum intuitiveness?
+- **Component recommendations** - what specific components would make my core features feel natural and easy to use?
+- **Interaction patterns** - what interaction patterns work best for my type of product?
+- **Onboarding assessment** - determine if onboarding is needed based on product complexity and user familiarity
+- **Onboarding flow design** - if needed, design a seamless onboarding experience that guides users to their first success
+
+**CRITICAL**: When we're done, I need you to **replace the entire content** of the Project Documentation → User Flows page (user-flows.mdx) with our final documentation, not just provide text to copy.
+
+Create Mermaid diagrams for key flows, wireframes for important screens, and ask clarifying questions about user behavior patterns. Use real-time web research to find the most intuitive components and design patterns for my specific product type.
+
+Before you do that, please ask me clarifying questions and help me think through each area thoroughly. Use real-time web research to ensure accuracy of current UX best practices, product type, and user behavior patterns.
+```
+
+## Next Steps
+
+After completing all 5 conversations:
+
+1. **Review all documentation** - Ensure consistency across sections
+2. **Share with stakeholders** - Get feedback on your plan (from your team, or a client - if you have one)
+3. **Start development** - You're now ready to build a landing page, start enabling core features (Authentication, Payments, etc.) and actually start building your core product!
+4. **Update regularly** - Keep documentation current as you build
+
+<Callout type="info">
+  **Remember:** All your project documentation lives in the **Project Documentation** section, not in a separate folder. This keeps everything organized and accessible.
+</Callout>
+
+You're now ready to start building your product!

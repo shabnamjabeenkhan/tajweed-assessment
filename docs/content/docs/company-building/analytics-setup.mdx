@@ -1,0 +1,70 @@
+---
+title: 'Analytics 🏗'
+description: 'Setting up user analytics, conversion tracking, and business intelligence'
+icon: ChartBar
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+This page lists the 3 analytics tools we recommend. Keep it simple and focused on what drives revenue and product outcomes.
+
+<Cards>
+  <Card
+    title="DataFast"
+    href="https://datafa.st/"
+    description="Revenue-first analytics that attributes revenue to marketing channels."
+  />
+  <Card
+    title="PostHog (Session Replay)"
+    href="https://posthog.com/docs/session-replay/installation"
+    description="Record sessions, enable in settings, and control with triggers/sampling."
+  />
+  <Card
+    title="Human Behavior"
+    href="https://www.humanbehavior.co/"
+    description="AI analyzes session replays to explain conversion drop-offs and breakages."
+  />
+</Cards>
+
+## DataFast — Revenue-first analytics
+
+- Shows which marketing channels bring PAYING customers (not vanity metrics)
+- Revenue attribution via Stripe, LemonSqueezy, Polar; funnels/goals/journeys
+- Ultra-fast script (~4kb); works with React Router and modern stacks
+
+Use it to prioritize channels by Revenue per Visitor and double down on what works.
+
+Learn more → [DataFast](https://datafa.st/)
+
+## PostHog — Session replays (capture behavior)
+
+Minimal setup:
+
+```bash
+npm i posthog-js
+```
+
+```ts
+import posthog from 'posthog-js'
+posthog.init('<ph_project_api_key>', { api_host: 'https://us.posthog.com' })
+```
+
+Then enable Session Recordings in Project Settings. Optionally add a reverse proxy to avoid blockers. Control what to record with URL/event triggers, feature flags, or sampling.
+
+Docs: [Session replay install](https://posthog.com/docs/session-replay/installation), [Control recordings](https://posthog.com/docs/session-replay/how-to-control-which-sessions-you-record), [JS library](https://posthog.com/docs/libraries/js)
+
+## Human Behavior — AI-analyzed replays (understand “why”)
+
+- AI watches your session replays and extracts key moments automatically
+- Natural language queries across sessions; smart ticketing with Linear/GitHub
+- Works by installing their SDK or connecting PostHog/LogRocket/Hotjar
+
+Use it to find why users don’t convert and where flows break—without scrubbing hours of video.
+
+Learn more → [Human Behavior](https://www.humanbehavior.co/)

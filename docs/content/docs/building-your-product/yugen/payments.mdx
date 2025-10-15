@@ -1,0 +1,166 @@
+---
+title: 'Payments Setup'
+description: Implement subscriptions using Polar
+icon: CreditCard
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+Polar is a **merchant of record** - you can offload regional tax compliance by using Polar.
+
+**Trade-off:** Merchants of record handle tax compliance on your behalf, so they usually have higher fees than Stripe. Polar has lower fees compared to competing merchants of record.
+
+### Developer Experience
+
+Where Polar really shines:
+
+- **Specify your system's user ID** when creating customers or managing checkouts. Avoids the split-brain problem where you maintain a mapping between your user IDs and customer IDs.
+- **Usage-based billing APIs** - create meters or credit systems for AI products
+
+## Setup
+
+<Steps>
+<Step>
+
+#### Create Sandbox Polar Account
+
+<Cards>
+  <Card 
+    title="Sign up for a Sandbox Account"
+    description="Visit sandbox.polar.sh to create your account."
+    href="https://sandbox.polar.sh" 
+  />
+</Cards>
+2. Go to **sandbox account** for development
+3. Settings: 
+   - Allow price changes (users manage their own subscriptions)
+   - Choose proration strategy
+
+</Step>
+
+<Step>
+
+#### Create Products
+
+Create test products with various prices. Example: 3 products with different tiers.
+
+</Step>
+</Steps>
+
+## Database Schema
+
+Create a subscriptions table to manage user subscriptions:
+
+```ts title="packages/data-ops/src/schema.ts"
+// Copy subscription table schema from template
+```
+
+Once created:
+
+```bash
+cd packages/data-ops
+pnpm run pull
+```
+
+Notice the subscription schema is now in the schema file.
+
+## Database Queries
+
+Create queries to manage subscription data operations:
+
+```ts title="packages/data-ops/src/queries/subscriptions.ts"
+// updateSubscription - inserts or updates subscriptions based on user ID
+// getSubscription - gets subscription based on user ID
+// Copy from template
+```
+
+Build the data-ops package:
+
+```bash
+pnpm run build
+```
+
+## Server Functions
+
+TanStack Start has the **absolute best implementation of server functions**.
+
+### Base Function with Middleware
+
+In the `server-functions/payments` file:
+
+```ts title="apps/user/app/server-fns/payments.ts"
+// Base function with two middleware:
+// 1. protectedFn - collects BetterAuth info, throws error if not signed in
+// 2. polarFn - creates Polar client with access token
+// Copy from template
+```
+
+#### Environment Setup
+
+Get access token from Polar dashboard:
+
+```bash title="apps/user/.env"
+POLAR_ACCESS_TOKEN=polar_sk_...
+POLAR_SERVER=sandbox  # Pass as env var so it can change when deployed
+```
+
+```bash
+pnpm run cf-typegen
+```
+
+### Server Functions
+
+Several exported server functions built on top of the base function:
+
+```ts
+// getProducts - queries Polar API, lists non-archived products
+// createPaymentLink - creates custom Polar checkout session for user based on product ID
+// validatePayment - checks if completed checkout is successful
+// collectSubscription - looks for valid subscription for user, saves if found
+// Copy from template
+```
+
+## Payment Flow
+
+These server functions power the following flow:
+
+1. User selects a product
+2. Checkout link is generated
+3. If user pays → redirected to success page
+4. Checkout session validated to see if payment successful
+5. If successful → `collectSubscription` called, user subscription saved
+
+### Backup: Webhooks
+
+If subscription isn't available via API (hasn't happened yet), we also have a **webhook** that:
+- Listens for subscription events from Polar
+- Saves successful paid subscriptions
+
+```ts title="apps/user/app/routes/api/webhooks/polar.ts"
+// Copy webhook handler from template
+```
+
+## Managing Subscriptions
+
+Polar provides APIs to create your own custom experience. But for **building MVP fast**:
+
+### Customer Portal
+
+Generate a portal link for a given customer. Users use Polar's UI to manage:
+- Subscriptions
+- Account settings
+
+```ts
+// Copy getCustomerPortal server function from template
+```
+
+**Important:** Have a webhook configured that fires on subscription events. Update the subscription table whenever a webhook is received.
+
+## Next Steps
+
+- [Deployment](/docs/building-your-product/yugen/deployment) - Deploy to Cloudflare Workers
+- [Advanced Features](/docs/building-your-product/yugen/advanced) - Learn about the data service

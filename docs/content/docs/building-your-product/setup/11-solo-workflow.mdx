@@ -1,0 +1,87 @@
+---
+title: 'Solo Workflow ✅'
+icon: CalendarDays
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDo: Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+<Note>
+  Last updated on: 5th October 2025
+</Note>
+
+Every time you come back to work on your project, start your development environment:
+
+## 1. Frontend Web Server
+
+In one terminal, run the following command:
+
+```bash
+bun run dev
+```
+
+## 2. Convex Backend Server
+
+In another terminal, run the following command:
+
+```bash
+bunx convex dev
+```
+
+## 3. Webhook Testing
+
+In another terminal, run the following command:
+
+```bash
+ngrok http 5173
+```
+
+<Note>
+  You only need to run ngrok when testing webhooks (payments, emails)
+</Note>
+
+If you do use ngrok, every time you run `ngrok http 5173`, it will generate a new URL so you need to update these locations:
+
+1. **Local Environment** (`.env.local`):
+   ```bash
+   FRONTEND_URL=https://new-ngrok-url.ngrok.io
+   ```
+
+2. **Convex Environment Variables**:
+   - Update `FRONTEND_URL` in Convex Dashboard
+
+3. **Vite Configuration** (`vite.config.ts`):
+   ```typescript
+   server: {
+     allowedHosts: ["new-ngrok-subdomain.ngrok.app"],
+   },
+   ```
+
+4. **Restart Servers**:
+   ```bash
+   # Stop and restart both dev servers
+   bun run dev
+   bunx convex dev
+   ```
+
+## Next Steps
+
+Now you can start building features or fixing bugs
+
+<Cards>
+  <Card
+    title="Building Features"
+    description="Build features one at a time"
+    href="/docs/building-your-product/building-features"
+  />
+  <Card
+    title="Fixing Bugs"
+    description="Fix bugs one at a time"
+    href="/docs/building-your-product/debugging-guide"
+  />
+</Cards>

@@ -1,0 +1,105 @@
+---
+title: 'Landing Page ✅'
+description: 'Setup a beautiful landing page for your product'
+icon: LayoutDashboard
+---
+
+<Note>
+  Last updated on: 9th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Cards, Card } from 'fumadocs-ui/components/card';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Templates
+
+Spoiler: We don't need to build a landing page from scratch.
+
+Essentially we can just use Framer or WebFlow templates and then customise them.
+
+Someone has already spent time optimising them for conversions. It makes no sense for us to spend a tonne of time trying to build one from scratch (especally if we're bootsrapping).
+
+We can always pay a designer later to build an even better landing page. For now, a solid template will do the job.
+
+<Cards>
+  <Card
+    title="Framer"
+    href="https://www.framer.com/"
+  >
+    Framer is a no-code platform for building beautiful landing pages.
+  </Card>
+  <Card
+    title="WebFlow"
+    href="https://webflow.com/"
+  >
+    WebFlow is a no-code platform for building beautiful landing pages.
+  </Card>
+</Cards>
+
+We've curated a database of landing page templates that you can use to get started quickly. Click on the card belo and scroll down to the 'Landing Page Templates' section to find a template that suits your product.
+
+<Cards>
+  <Card
+    title="Code and Creed - Design Database"
+    href="https://design.codeandcreed.tech/"
+  >
+    Database of Landing Page Templates, Component Libraries, and Design Systems
+  </Card>
+</Cards>
+
+That's it. You can now start building your landing page quickly. Don't waste too much time on this. Just get something up and running quickly.
+
+In order to tailor the copy to your product, you can ask your AI agent to help you customise the copy based on your Product Documentation (see the next section for more details).
+
+## AI Copywriting Prompt
+
+Once you've chosen a template, you can ask your AI agent to help you customise the copy based on your Product Documentation.
+
+Use this prompt with your AI agent to create compelling, human-sounding copy for your landing page:
+
+```markdown
+I need help writing high-converting landing page copy for my product. Please write copy that:
+
+See our 'Product Documentation' pages for more details for our product idea, target audience, core features, and key benefits.
+
+**Requirements**:
+- Write in a natural, human voice that doesn't sound AI-generated
+- Use emotional triggers and persuasive language
+- Focus on pain points and how my product solves them
+- Include social proof elements (even if hypothetical)
+- Create urgency without being pushy
+- Avoid em-dashes and overly formal language
+- Make it conversational and relatable
+
+**Structure**:
+1. **Headline** - Attention-grabbing hook that addresses the main pain point
+2. **Subheadline** - Clarify what the product does and who it's for
+3. **Problem Statement** - Paint the picture of current frustrations
+4. **Solution Introduction** - How my product solves this
+5. **Key Benefits** - 3-4 main benefits with emotional impact
+6. **Social Proof** - Testimonials or usage statistics
+7. **Call-to-Action** - Clear next step for the user
+
+Provide me with the new copy. Make it sound like it was written by someone who truly understands their struggles.
+```
+
+Once you have this copy, you can copy and paste it into the landing page within Framer/WebFlow and that's it. 
+
+Set the 'Sign Up' button to point to your product's sign up page (/sign-up).
+
+And Set the 'Log In' button to point to your product's log in page (/login).
+
+## Configure Satellite Domain (Clerk)
+
+<Note>
+  Coming soon...
+</Note>
+
+These will allow you to share authentication state between different domains; Your landing page domain (example.com) and your app domain (app.example.com).

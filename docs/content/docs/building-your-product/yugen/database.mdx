@@ -1,0 +1,154 @@
+---
+title: 'Database Setup'
+description: Configure Drizzle ORM with any relational database
+icon: Database
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+### Why HTTP Proxy Matters
+
+When selecting a database for an application deployed on the edge, find a provider that offers an **HTTP proxy for queries**.
+
+**Why?** Databases can only handle a certain number of concurrent connections. Edge-based providers (Cloudflare, Vercel, Netlify, AWS Lambda) create many short-lived instances that can max out concurrent connections.
+
+### Recommended Providers
+
+We have many viable database providers that offer serverless connections:
+
+- **PlanetScale** - Personal go-to, offers MySQL and PostgreSQL
+- **Neon** - PostgreSQL with free tier (more cost-sensitive)
+- **Supabase** - PostgreSQL with free tier
+- **Turso** - SQLite option
+- **Cloudflare D1** - SQLite, keeps entire stack within Cloudflare
+
+This template accommodates any relational database provider.
+
+## Setup with Neon (Free PostgreSQL)
+
+<Steps>
+<Step>
+
+#### Create Database and Get Credentials
+
+1. Create a Neon database (free)
+2. Collect environment variables needed to connect
+
+Navigate to `data-ops` package and create `.env`:
+
+```bash
+cd packages/data-ops
+```
+
+```bash title="packages/data-ops/.env"
+# Paste dummy environment variables from template
+DATABASE_HOST=your-project.neon.tech
+DATABASE_USERNAME=your-username
+DATABASE_PASSWORD=your-password
+DATABASE_NAME=your-database
+```
+
+Head to Neon to collect your connection string. Pull out the password, username, and host.
+
+</Step>
+
+<Step>
+
+#### Configure Drizzle
+
+Find the drizzle config file in `data-ops` package. This config file drives most schema management workloads.
+
+```ts title="packages/data-ops/drizzle.config.ts"
+// Copy the drizzle config from the docs
+```
+
+</Step>
+
+<Step>
+
+#### Verify Setup
+
+```bash
+cd packages/data-ops
+pnpm run pull
+```
+
+The `drizzle pull` command reads all public tables in your database and creates Drizzle schemas for type-safe queries. 
+
+You'll notice `schema.ts` doesn't have any schemas because there are no tables yet.
+
+</Step>
+</Steps>
+
+## Database Initializer and Getter
+
+Build out a reusable database initializer and getter:
+
+```ts title="packages/data-ops/src/db.ts"
+// The initializer takes in connection details and creates a Drizzle database client
+// Copy from template
+```
+
+**Pattern:** Due to deploying to Cloudflare Workers, we instantiate the database right after the worker is invoked. Once instantiated, you can call `getDB()` wherever you're running serverside code.
+
+## Integrate with User Application
+
+Build the data-ops package, then head to `server.ts` in your user application. This is the entry point for all requests when using TanStack Start.
+
+<Steps>
+<Step>
+
+#### Add Environment Variable
+
+Create `.env` in user application root:
+
+```bash title="apps/user/.env"
+DATABASE_URL=postgresql://username:password@host/database
+```
+
+</Step>
+
+<Step>
+
+#### Generate Cloudflare Types
+
+```bash
+cd apps/user
+pnpm run cf-typegen
+```
+
+A type file is generated - now you can instantiate the database and pass credentials using the Cloudflare environment.
+
+</Step>
+
+<Step>
+
+#### Update server.ts
+
+```ts title="apps/user/app/server.ts"
+// Copy from template - shows how to initDB with env.DATABASE_URL
+```
+
+</Step>
+</Steps>
+
+## Test Connection
+
+You can test your database connection by running a query to select tables in the database.
+
+```ts
+// Example test query
+```
+
+## Creating Reusable Queries
+
+Later you'll create reusable database queries in the `data-ops` package. These queries can be used in both the user application and data service.
+
+## Next Steps
+
+- [Authentication Setup](/docs/building-your-product/yugen/authentication) - Create auth tables with BetterAuth
+

@@ -1,0 +1,142 @@
+---
+title: 'Observability 🏗'
+description: Monitor your application's health, track errors, and set up alerting to stay informed about issues in production.
+icon: Activity
+---
+
+<Note>
+  Last updated on: 11th October 2025
+</Note>
+
+<Note>
+  NOTE: This is an optional add-on to your Web App. You can skip this step if you don't want to set up observability for now.
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+
+  ToDos: 
+    - Finish and review content on this page
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Prerequisites
+
+### 1. Create a Sentry Account
+
+<Cards>
+  <Card
+    title="Sign up for Sentry"
+    href="https://sentry.io"
+    description="Create a free account to start monitoring errors and performance."
+  />
+</Cards>
+
+1. Create a new project for your application
+2. Select **Node.js** as the platform
+3. Copy your **DSN (Data Source Name)** - you'll need this for the integration
+
+### 2. Upgrade to Convex Pro
+
+Convex's Sentry integration is only available on the Pro plan:
+
+1. Go to your [Convex Dashboard](https://dashboard.convex.dev)
+2. Select your deployment
+3. Navigate to **Settings** → **Billing**
+4. Upgrade to the **Pro** plan
+
+### 3. Understand Sentry Concepts
+
+#### Automatic Tags
+
+Convex automatically tags every exception with the following metadata:
+
+| Tag | Description | Example |
+|-----|-------------|---------|
+| `func` | Function name in string format | `"messages:send"` |
+| `func_type` | Type of Convex function | `"query"`, `"mutation"`, `"action"`, `"http_action"` |
+| `func_runtime` | Function runtime environment | `"default"` or `"node"` |
+| `request_id` | Unique request identifier for debugging | `"abc123def456"` |
+| `server_name` | Deployment name | `"happy-animal-123"` |
+| `environment` | Deployment environment | `"prod"`, `"dev"`, or `"preview"` |
+| `user` | Authenticated user's token identifier (if auth enabled) | `"https://clerk.com/user_123"` |
+
+#### Custom Tags (Optional)
+
+You can add custom tags during setup to further categorize errors:
+
+```plaintext
+version: "1.0.0"
+team: "backend"
+region: "us-west"
+```
+
+These tags help you:
+- Filter errors by release version
+- Route alerts to specific teams
+- Track errors by geographic region
+
+## Error Monitoring with Sentry
+
+Track and monitor errors from your Convex backend functions using Sentry's built-in integration.
+
+### 1. Configure Convex's Sentry Integration
+
+1. Go to your Convex Dashboard
+2. Select your deployment
+3. Click on **Settings** in the sidebar
+4. Select the **Integrations** tab
+5. Click on the **Sentry** card
+6. Enter your **Sentry DSN** from your Sentry project settings
+7. (Optional) Add custom tags to categorize errors
+8. Click **Save** to enable the integration
+
+### 2. Verify the Integration
+
+1. Trigger an error in one of your Convex functions (you can temporarily throw an error for testing)
+2. Check your Sentry dashboard within 1-2 minutes
+3. You should see the error event with Convex-specific tags
+
+### Finding Errors in Sentry
+
+Once configured, errors will appear in your Sentry dashboard with:
+
+1. **Stack traces** showing where the error occurred
+2. **Convex-specific context** (function name, type, runtime)
+3. **User information** (if authenticated)
+4. **Request ID** for correlation with Convex logs
+
+<Note>
+**Debugging Tip**: Use the `request_id` tag to find the corresponding logs in your Convex Dashboard under the Logs tab.
+</Note>
+
+### Sentry Limitations
+
+- **Propagation delay**: Exceptions may take 1-2 minutes to appear in Sentry
+- **SDK features**: Built-in integration doesn't support advanced Sentry SDK customization
+- **Backend only**: This integration only tracks Convex function errors, not frontend errors
+
+## Uptime Monitoring with OpenStatus
+
+Set up uptime monitoring for your application using OpenStatus.
+
+### 1. Create an OpenStatus Account
+
+<Cards>
+  <Card
+    title="Sign up for OpenStatus"
+    href="https://openstatus.dev"
+    description="Create a free account to start monitoring uptime and performance."
+  />
+</Cards>
+
+1. Create an account
+2. Create a new workspace/project
+
+<Note>
+  Incomplete. Need to finish this section.
+</Note>

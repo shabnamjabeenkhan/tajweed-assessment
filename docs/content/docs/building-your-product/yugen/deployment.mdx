@@ -1,0 +1,47 @@
+---
+title: 'Deployment'
+description: Deploy to Cloudflare Workers
+icon: Cloud
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+Deploys out of the box to Cloudflare, which can accommodate:
+- Free hobby projects
+- Serious high-volume services
+
+## Deploy Command
+
+```bash
+pnpm run deploy:user
+```
+
+Cloudflare gives you a URL to view your deployment.
+
+## Configuration
+
+### Worker Name
+
+Change the name in `wrangler.toml`:
+
+```toml title="apps/user/wrangler.toml"
+name = "my-app"
+```
+
+### Custom Domains
+
+Add routes for custom domains associated with your Cloudflare account:
+
+```toml title="apps/user/wrangler.toml"
+routes = [
+  { pattern = "example.com", zone_name = "example.com" }
+]
+```
+
+## Next Steps
+
+- [Advanced Features](/docs/building-your-product/yugen/advanced) - Set up the data service

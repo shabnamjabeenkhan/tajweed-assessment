@@ -1,0 +1,175 @@
+---
+title: 'Pull Requests ✅'
+description: 'Fast, clear PRs with AI-era review habits'
+icon: GitPullRequest
+---
+
+<YouTube id="UqJJktxCY9U" />
+
+Great reviews keep teams fast and code healthy. Bad PRs slow everyone down. Investing in a solid review process will pay off in the long run.
+
+With AI generating more code, specs will become the source of truth.
+
+You and your team will have already done the prior research and created the spec during the Feature Building process:
+
+<Cards>
+  <Card
+    title="Building Features"
+    href="/docs/building-your-product/building-features"
+    description="Building Features"
+  />
+</Cards>
+
+The quality of the research and spec will thus determine the quality of the code:
+- Bad research → thousands of bad lines of code
+- Bad plan → hundreds of bad lines of code
+- Bad code → one bad line of code
+
+So it's critical to have a good spec (that you and your team should have already reviewed and approved)
+
+## Prerequisite: GitHub MCP in Cursor
+
+Why? Because it's the easiest way to get the latest PR comments in your agent's context.
+
+- Requires Cursor v0.48.0+, GitHub PAT, (optional) Docker
+- Add to your global MCP config at `~/.cursor/mcp.json`, then restart Cursor
+
+Remote (recommended):
+```json
+{
+  "mcpServers": {
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": { "Authorization": "Bearer YOUR_GITHUB_PAT" }
+    }
+  }
+}
+```
+
+Local (Docker):
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT" }
+    }
+  }
+}
+```
+
+Note: `@modelcontextprotocol/server-github` is deprecated (Apr 2025). Use `ghcr.io/github/github-mcp-server`.
+
+## Create PRs Engineers love to Review (The Author's Perspective)
+
+### 1. Automated Review (CodeRabbit)
+
+You don't actually need to review every single line of code in the PR. 
+
+You can use powerful fine-tuned code review tools like [CodeRabbit](https://coderabbit.ai/) for fast, consistent feedback on production PRs. It posts inline PR comments with suggestions grounded in your codebase, application architecture, and business context:
+
+```bash
+coderabbit --prompt-only
+```
+
+### 2. Generate a Good PR Description
+
+```markdown
+Create a concise PR description based on the spec and the code changes including:
+1. Problem — what’s broken or missing
+2. Solution — what changed and why
+3. Testing — how verified (unit/integration/manual)
+4. Impact — risks and affected areas
+5. Visuals — screenshots if UI changed
+6. Documentation — ensure Project Documentation has been updated and where the files are located
+
+Feature Spec file: [FEATURE_SPEC_FILE].md
+```
+
+Paste the output into your PR description. This will help the reviewer understand the core changes and the rationale behind them.
+
+### 3. Clear Description
+
+**Bad ❌**
+```
+Fixed bug
+```
+
+**Great ✅**
+```
+Fix auth session timeout
+
+## Problem
+Users were logged out after 30m; product expects 2h.
+
+## Solution
+Increase session timeout from 30m → 2h.
+
+## Testing
+- Session persists 2+ hours
+- Manual logout still works
+
+Fixes ticket #123
+```
+
+### 4. Ensure the PR is Focused
+
+- Single responsibility per PR (implementing/fixing/refactoring one thing at a time)
+- Lines of code doesn't actually matter as much anymore (as long as the PR is focused on one thing)
+
+### 5. Pre-Review Checklist
+
+Before you assign a reviewer, you should have done the following:
+
+- [ ] No console/debug logs
+- [ ] Error handling in place
+- [ ] Tests pass locally (if applicable)
+- [ ] No hardcoded values (use env vars)
+
+### 6. (Post Review) Fetch PR Comments via GitHub MCP (then fix)
+
+Run this prompt in Cursor to fetch PR comments via the GitHub MCP server and then apply fixes:
+
+```markdown
+Fetch PR comments for issue_number=#<PR_NUMBER> using the GitHub MCP server and then help me apply the fixes that make sense, and replies to any comments that are asking questions or require more information.
+
+Then:
+1) Run:
+   - bun run typecheck
+   - bun run build
+   - bunx convex dev --once (if Convex touched)
+2) If failures, iterate until green
+3) Push the changes and ask for a re-review
+```
+
+## Review Process (The Reviewer's Perspective)
+
+### 1. Review PR Description and CodeRabbit Feedback
+- Skim PR description and linked spec
+- Scan CodeRabbit inline comments for hotspots and critical issues
+
+### 2. Verify Spec Alignment
+- Confirm changes match the agreed spec and acceptance criteria
+- Flag scope creep or missing requirements
+
+### 3. Test the Changes
+- Functionality: does it work as intended?
+
+<Note>
+  If your Tech Stack allows for preview environments, test the changes in the preview environment.
+</Note>
+
+- Tests: coverage, edge cases, failure paths (CodeRabbit will cover this)
+- Performance: obvious bottlenecks avoided (CodeRabbit will cover this)
+- Security: input validation, auth, secrets, PII (CodeRabbit will cover this)
+
+### 4. Approve
+- Approve the PR and merge once the changes have been tested and reviewed.

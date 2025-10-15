@@ -1,0 +1,185 @@
+---
+title: 'Team Workflow 🏗'
+description: Work quickly and seamlessly within a team dynamic
+icon: CalendarDays
+---
+
+<Note>
+  Last updated on: 12th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Test this setup and flow for an example PR
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Configure PR Preview Environments
+
+This only need to be done once.
+
+<Note>
+  Skip this Step if you're NOT using Vercel as your Deployment Platform.
+  
+  We're hoping that Railway can support this in the near future.
+</Note>
+
+**Goal**: Each PR gets a Vercel Preview URL and a fresh, isolated Convex backend. Click the PR preview and test end‑to‑end without touching dev/prod.
+
+### 1. Generate Preview Deploy Key
+
+- Go to your Convex Dashboard → `Project Settings` → `+ Generate Preview Deploy Key`
+- Give it a name (e.g. `preview`)
+- Copy the key
+
+### 2. Add key to Vercel
+
+- Navigate to your Vercel Project → `Settings` → `Environment Variables` → `+ Add`
+
+```bash
+CONVEX_DEPLOY_KEY=paste_your_preview_deploy_key
+```
+
+<Note>
+  Make sure to set the Environment to `Preview` only.
+</Note>
+
+### 3. Default Environment Variables
+
+We'll need to set up the Default Environment Variables for your Convex Project so that when a new PR is created, the Preview Environment will automatically use these variables.
+
+- Go to your Convex Dashboard → `Project Settings` → `Default Environment Variables`
+
+```bash
+POLAR_API_KEY=polar_...
+POLAR_ORGANIZATION_ID=...
+POLAR_SERVER=sandbox
+POLAR_WEBHOOK_SECRET=polar_...
+VITE_CLERK_FRONTEND_API_URL=https://your-app.clerk.accounts.dev
+```
+
+You'll also need to add the Vercel Preview URL as the `FRONTEND_URL` environment variable for this Preview Environment.
+
+```bash
+FRONTEND_URL=https://your-vercel-preview-url.vercel.app
+```
+
+Optionally, if you're PR requires, you may need to do one or both of the following:
+
+- If you've introduced a new Environment Variable that is required client-side, you'll need to add it as a `Preview` Environment Variable in Vercel.
+- If you've introduced a new Environment Variable that is required server-side, you'll need to add it as an Environment Variable in your Preview Deployment in Convex
+
+### 4. Seed data (optional)
+
+You can create a new Convex function that seeds data for the Preview Environment so that when a new PR is created, the Preview Environment will automatically have some data to work with.
+
+If you have a Convex function that seeds data (e.g., `seed.preview`), append `--preview-run` to the build command in your Vercel Project Settings. It only runs on previews and is ignored for prod:
+
+```bash
+bunx convex deploy --cmd 'bun run build' --preview-run 'seed.preview'
+```
+
+## Development Workflow
+
+Every time anyone in your team comes back to work on your project, do the following:
+
+### 1. Pull the latest changes
+```bash
+git checkout main && git pull
+```
+
+### 2. Install dependencies
+```bash
+bun install
+```
+
+### 3. Start Dev Servers
+
+Frontend Web Server:
+```bash
+bun run dev
+```
+
+Convex Backend Server:
+```bash
+bunx convex dev
+```
+
+### 4. Webhook Testing
+```bash
+ngrok http 5173
+```
+
+<Note>
+  Remember, you only need to run ngrok when testing webhooks (payments, emails)
+</Note>
+
+If you do use ngrok, every time you run `ngrok http 5173`, it will generate a new URL so you need to update these locations:
+
+1. **Local Environment** (`.env.local`):
+   ```bash
+   FRONTEND_URL=https://new-ngrok-url.ngrok.io
+   ```
+
+2. **Convex Environment Variables**:
+   - Update `FRONTEND_URL` in Convex Dashboard
+
+3. **Vite Configuration** (`vite.config.ts`):
+   ```typescript
+   server: {
+     allowedHosts: ["new-ngrok-subdomain.ngrok.app"],
+   },
+   ```
+
+### 5. Restart Servers
+   ```bash
+   # Stop and restart both dev servers
+   bun run dev
+   bunx convex dev
+   ```
+
+## 6. Building Features and Fixing Bugs
+
+Now you can start building features or fixing bugs
+
+<Cards>
+  <Card
+    title="Building Features"
+    description="Build features one at a time"
+    href="/docs/building-your-product/building-features"
+  />
+  <Card
+    title="Fixing Bugs"
+    description="Fix bugs one at a time"
+    href="/docs/building-your-product/debugging-guide"
+  />
+</Cards>
+
+## 7. Creating a PR
+
+Once you think you're done with a feature (and have sufficiently tested it), you can do the following (assuming you've setup PR Preview Environments):
+
+1. Open a PR
+2. Wait for the Vercel Preview deployment to finish
+3. Click the Preview URL in the PR → Copy the URL
+4. Navigate to your Convex Dashboard.
+5. Open the Deployment dropdown at the top — you'll see a new deployment named after the branch. It has isolated data/functions/crons.
+6. Add the Vercel Preview URL as the `FRONTEND_URL` environment variable for this deployment (and any other Environment Variables that this PR requires)
+6. Click `Save`.
+
+<Note>
+  If the preview fails to find Convex, go to your Vercel Project → `Settings` → `Environment Variables` → `Preview` → double-check that `CONVEX_DEPLOY_KEY` is set and that the build command matches above, and `VITE_CONVEX_URL` is not set in the Vercel Preview environment.
+</Note>
+
+## 6. Merging
+
+Once the PR has been approved, tested, and merged in to the main development branch, you can do the following:
+
+- Go to your Convex Dashboard → `Project Settings` → `Environment Variables` → `+ Add`
+- Add any extra Environment Variables that this PR required, to your Production Deployment in the Convex Dashboard.
+- Add any extra Environment Variables that this PR required, to your Production Deployment in the Vercel Project Settings.
+- Click `Save`.

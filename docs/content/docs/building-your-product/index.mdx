@@ -1,0 +1,223 @@
+---
+title: 'Prerequisites ✅'
+description: 'Get your local environment ready with all the essential tools and dependencies'
+icon: CircleCheck
+---
+
+<Note>
+  Last updated on: 9th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDo: Record video for this page
+</Callout>
+
+Before you can start building (web apps, mobile apps, etc.), you need to have a working local environment. These are things you only need to do once.
+
+## Web Apps
+
+### Node.js
+Use the latest stable version (currently v24.x.x):
+
+**Mac/Linux**:
+```bash
+nvm install stable
+```
+
+Verify installation:
+```bash
+node -v
+```
+
+### Ngrok
+
+Required for webhook testing locally (payments, emails, etc.)
+
+```bash
+brew install ngrok
+```
+
+## Mobile Apps
+
+<Note>
+  Coming soon...
+</Note>
+
+## Required AI Tools
+
+We heavily recommend setting up the below tools and MCP (Model Context Protocol) servers to supercharge your development workflow.
+
+Trust me. They're going to make your life so much easier, when you're building features.
+
+### 1. Context7: Up-to-date Docs for LLMs
+
+Context7 solves the limitation of AI coding assistants having outdated knowledge due to training cutoffs.
+
+**Why You Need It:**
+- Access to 800+ up-to-date framework documentations
+- Pulls only specific, relevant documentation pieces when needed
+- Preserves context tokens for your actual code
+- Includes code examples that help write accurate code
+- Supports documentation search for precise information retrieval
+
+**Installation:**
+1. In Cursor, go to **Settings → MCP**
+2. Add new MCP with this configuration to your existing MCP JSON object:
+
+```json
+{
+  "mcpServers": {
+    // ... other MCP servers
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}
+```
+
+3. Save and refresh Cursor (or restart if tools don't appear)
+
+**Usage:** When prompting, explicitly ask Cursor agent to call Context7 MCP to access up-to-date knowledge without context overload.
+
+### 2. Firecrawl: Web Scraping for Missing Documentation
+
+<Note>
+  Firecrawl is not free. You will need to add credits to your account to use it.
+</Note>
+
+Firecrawl complements Context7 by allowing you to scrape documentation from any website when it's not available in the Context7 database.
+
+**Why You Need It:**
+- Documentation for newer or niche libraries may not be in Context7 yet
+- Extract specific information from websites not in any database
+- Save documentation locally for future reference (saves time and cost of web research tool calls)
+
+**Installation:**
+1. In Cursor, go to **Settings → MCP**
+2. Add Firecrawl to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "Firecrawl Scraper": {
+      "command": "env",
+      "args": [
+        "FIRECRAWL_API_KEY=your-api-key-here",
+        "npx",
+        "-y",
+        "firecrawl-mcp"
+      ]
+    }
+  }
+}
+```
+
+3. Save and refresh Cursor (or restart if tools don't appear)
+
+**Getting a Firecrawl API Key:**
+- Sign up at [firecrawl.dev](https://firecrawl.dev)
+- Get your free API key from the dashboard
+- Replace `your-api-key-here` with your actual key
+
+### 3. RepoPrompt: AI Context Server ($14.99/month)
+
+RepoPrompt's MCP integration positions the application as a high-signal "AI context server" rather than a full IDE. Editors such as Cursor, Claude Code and any other MCP-compatible client can request rich project information, perform semantic searches, and even obtain high-level architectural plans directly from RepoPrompt.
+
+**Why You Need It:**
+- High-speed semantic searches across your entire codebase
+- Rich project information and architectural insights
+- Token-efficient context management
+- Comprehensive code mapping and file operations
+- Direct integration with AI coding assistants
+
+<Note>
+  You need to have RepoPrompt open for it to work alongside Cursor.
+</Note>
+
+**Installation:**
+1. Download and install RepoPrompt from [repoprompt.com](https://repoprompt.com)
+3. Enable Server: Open Settings → MCP Server and flip the "Enable MCP Server" toggle
+4. Auto-Start (Optional): Toggle "Launch on App Start" if you want the server always on
+5. Planner Model: Pick a model for request_plan (GPT-4, Claude 3.5 Sonnet, Ollama local, etc.)
+
+** (Recommended) Cursor Integration (One-Click):**
+1. Open Settings → MCP Server and click "Install in Cursor"
+2. RepoPrompt writes a `.cursor/mcp-config.json` file and triggers a deeplink
+3. Cursor opens pre-configured
+4. Accept the connection prompt inside RepoPrompt if not auto-approved
+5. All enabled tools are now exposed in Cursor's MCP palette
+
+### 4. CodeRabbit CLI: AI Code Reviews (Free for Public Repos, $12/month for Private Repos)
+
+CodeRabbit CLI provides AI-powered code reviews directly in your terminal, analyzing your uncommitted changes using the same pattern recognition that powers PR reviews.
+
+**Why You Need It:**
+- Expert-level issue detection with full codebase context
+- Identifies race conditions, memory leaks, security vulnerabilities, and logic errors
+- Provides actionable suggestions with specific fix recommendations
+- Optimized output format for AI coding agents
+- Works seamlessly with the spec-driven development workflow
+
+**Installation:**
+1. Install CodeRabbit CLI globally:
+```bash
+npm install -g @coderabbitai/cli
+```
+
+2. Authenticate with your CodeRabbit account:
+```bash
+coderabbit auth
+```
+
+3. Follow the authentication flow to link your CLI with your CodeRabbit account
+
+**Usage in Development Workflow:**
+- **Interactive mode**: `coderabbit` - Full interface with browsable findings
+- **Plain text mode**: `coderabbit --plain` - Detailed feedback with fix suggestions  
+- **AI agent mode**: `coderabbit --prompt-only` - Minimal output optimized for AI agents
+
+**Integration with AI Agents:**
+The `--prompt-only` mode creates a unique workflow where CodeRabbit identifies problems with full codebase context, then your AI agent implements the fixes. You get expert-level issue detection combined with AI-powered implementation.
+
+## Domain Setup (Start Early)
+
+### Purchase a Domain
+
+The domain registrars we recommend are:
+<Cards>
+  <Card
+    title="Porkbun"
+    href="https://porkbun.com"
+    description="Easy-to-use registrar with great pricing and DNS management."
+  />
+  <Card
+    title="Hostinger Domains"
+    href="https://www.hostinger.com/domain-name-search"
+    description="Reliable and affordable domain registration and hosting services."
+  />
+</Cards>
+
+Some services require domain verification and DNS record setup, which can take 12-48 hours to propagate. Start these early to avoid delays later (see below)
+
+### Resend Email Service
+
+If the Tech Stack you're using uses Resend for email, you'll need to set up a domain for it.
+
+**Setup Steps:**
+1. Create account at [resend.com](https://resend.com)
+2. Go to **Domains** → **Add Domain**
+3. Enter your domain (e.g., `yourdomain.com`)
+4. Add required DNS records to your domain registrar:
+   - TXT record for domain verification
+   - MX record for email routing
+   - CNAME record for SPF/DKIM
+5. Wait for verification (12-48 hours for DNS propagation)
+
+**Note:** You can use Resend's sandbox domain for development, but production requires your own verified domain.
+
+## Next Steps
+
+Once you have all prerequisites ready, we're ready to setup our project and start building!

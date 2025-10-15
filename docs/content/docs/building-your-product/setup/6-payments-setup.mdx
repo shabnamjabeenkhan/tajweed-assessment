@@ -1,0 +1,145 @@
+---
+title: 'Payments Setup ✅'
+description: 'Enable subscription billing and payments with Polar.sh and Convex'
+icon: CreditCard
+---
+
+<Note>
+  Last updated on: 11th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+<Warning>
+This step requires ngrok (to expose our localhost to the internet), so that we can test payments locally.
+
+Confirm by running:
+```bash
+ngrok --version
+```
+</Warning>
+
+You don't need to enable anything in your `config.ts` file as payments are already enabled.
+
+## Run ngrok locally
+
+1. **Start ngrok**
+   ```bash
+   ngrok http 5173
+   ```
+   - Copy the HTTPS URL (e.g., `https://abc123.ngrok.io`)
+
+2. **Update your `.env.local`'s `FRONTEND_URL`**
+
+   ```bash
+   FRONTEND_URL=https://abc123.ngrok.io
+   ```
+
+3. **Update Vite Configuration**
+
+   ```typescript
+   export default defineConfig({
+     // ... existing config
+     server: {
+       allowedHosts: ["abc123.ngrok.app"], // Replace with your ngrok subdomain
+     },
+   });
+   ```
+
+## Configure Payments
+
+### 1. Create a Polar Sandbox Account
+
+<Cards>
+  <Card
+    title="Polar.sh (Sandbox)"
+    href="https://sandbox.polar.sh"
+    description="Create your account and set up your organization."
+  />
+</Cards>
+
+### 2. Create Products
+
+Create products in Polar according to your documentation decisions:
+  - If it recommended subscriptions, create subscription plans only
+  - If it recommended one-time purchases, create one-time products only
+  - If it selected a hybrid model, create both the subscription plans and one-time products
+
+<Cards>
+  <Card
+    title="Documented Idea"
+    href="/docs/project-documentation#pricing-model-decision"
+    description="Check the 'Pricing Model Decision' section"
+  />
+</Cards>
+
+### 3. Get Polar Environment Variables
+- **`POLAR_ACCESS_TOKEN`**: Navigate to `Settings` → `General` → Scroll down to the `Developers` section → `New Token` (All scopes, no expiration) → Copy the token
+- **`POLAR_ORGANIZATION_ID`**: Navigate to `Settings` → At the top in the `Profile` section → copy the `Identifier`
+- **`POLAR_SERVER`**: Set to `sandbox` for development
+
+### 4. Add Variables to Convex Dashboard
+Go to Convex Dashboard → `Settings` → `Environment Variables`
+
+Add all three variables above, plus:
+```bash
+FRONTEND_URL=https://abc123.ngrok.io
+```
+
+### 5. Set Up Webhook
+Get your Convex HTTP URL (ends in `.convex.site`)
+
+In Polar Dashboard: Navigate to `Settings` → `Webhooks` → Click `Add Endpoint`
+- URL: `https://your-deployment.convex.site/payments/webhook`
+- Format: **Raw**
+- Select all events
+- Generate secret and copy it
+- Add `POLAR_WEBHOOK_SECRET=whsec_...` to Convex environment variables
+
+### 6. Test Payment Flow
+
+Restart Development Servers:
+
+```bash
+# Stop and restart both servers
+bun run dev
+bunx convex dev  # In separate terminal
+```
+
+Use your ngrok URL in browser, e.g. `https://abc123.ngrok.io` (use incognito mode to keep logs clean)
+
+- Sign up/login with test account
+- Navigate to pricing page
+- Click on any payment plan
+
+Use the Stripe test card: 
+
+<Cards>
+  <Card
+    title="Stripe Test Card Details"
+    description={
+      <>
+        <strong>Card number:</strong> 4242 4242 4242 4242<br/>
+        <strong>Expiration date:</strong> Any future date<br/>
+        <strong>CVC:</strong> Any three digits (e.g. 123)
+      </>
+    }
+  />
+</Cards>
+
+### 8. Verify Success
+
+- Verify redirect to success page ✅
+- Check dashboard for subscription status ✅
+- Data should sync to Convex database (subscriptions or one-time payments should be created in the database) ✅
+
+## Next Steps
+
+With payments working, proceed to the next step to add transactional email functionality.

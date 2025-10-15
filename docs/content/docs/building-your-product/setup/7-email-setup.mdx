@@ -1,0 +1,128 @@
+---
+title: 'Email Setup ✅'
+description: 'Enable transactional email functionality with Resend via Convex'
+icon: Mail
+---
+ 
+<Note>
+  Last updated on: 11th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Update Configuration
+
+Enable email in `config.ts`:
+
+```typescript
+export const config: AppConfig = {
+  features: {
+    auth: true,
+    payments: true,
+    convex: true,
+    email: true,       // ✅ Enable email
+    monitoring: false,
+  },
+  services: {
+    clerk: { enabled: true },
+    polar: { enabled: true },
+    convex: { enabled: true },
+    resend: {
+      enabled: true,   // ✅ Enable Resend
+      apiKey: process.env.RESEND_API_KEY,
+      webhookSecret: process.env.RESEND_WEBHOOK_SECRET,
+    },
+  },
+  ui: {
+    showAuth: true,
+    showPricing: true,
+    showDashboard: true,
+    showChat: false,
+  },
+};
+```
+
+If you haven't already, complete the Resend domain setup from the Prerequisites page:
+
+<Cards>
+  <Card title="Complete Resend Domain Setup" href="/docs/building-your-product">
+    Make sure you’ve completed the Resend domain setup as described in the Prerequisites page. DNS record propagation can take 12-48 hours to complete.
+  </Card>
+</Cards>
+
+## 1. Set Up Resend Account
+
+Generate API Key:
+   - Go to the Resend platform and navigate to `API Keys`
+   - Create new key with `Full Access` permissions
+   - Copy the key (starts with `re_`)
+
+## 2. Configure Convex
+
+Add Variables to Convex:
+
+Go to `Convex Dashboard` → `Settings` → `Environment Variables`:
+
+```bash
+RESEND_API_KEY=re_...
+SENDER_EMAIL=noreply@yourdomain.com  # For production
+COMPANY_NAME=Your Company Name
+```
+
+## 3. Set Up Email Webhooks
+
+Get Convex HTTP URL:
+
+Find your deployment URL (ends in `.convex.site`)
+
+## 4. Configure Webhook in Resend
+
+Go to Resend Dashboard → `Webhooks` → `Add Endpoint`
+
+- URL: `https://your-deployment.convex.site/resend-webhook`
+- Enable all `email.*` events
+- Generate and copy webhook secret
+
+## 5. Add Webhook Secret to Convex
+
+```bash
+RESEND_WEBHOOK_SECRET=whsec_...
+```
+
+## 6. Test Email Functionality
+
+### Restart Servers
+
+```bash
+bun run dev
+```
+
+```bash
+bunx convex dev
+```
+
+### Access Email Test Form
+
+1. Navigate to `/dashboard` (must be authenticated)
+2. Find the "Test Email" form
+
+### Send Test Email
+
+1. Send to your Resend account email
+2. Check spam folder - sandbox emails often go there
+
+### Verify Delivery
+
+- Check Resend Dashboard → **Logs** for success ✅
+- Confirm email received in inbox ✅
+
+### Next Steps
+
+With email working, proceed to the next step to add OpenAI-powered chat functionality.

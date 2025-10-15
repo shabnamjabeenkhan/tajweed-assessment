@@ -1,0 +1,184 @@
+---
+title: Database Migrations 🏗
+description: Define, run, and track online data migrations in Convex using the Migrations component.
+icon: Database
+---
+
+<Note>
+  Last updated on: 9th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+
+  ToDos: 
+    - Finish and review content on this page
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+Learn how to safely evolve your database schema without downtime using Convex migrations.
+
+## Prerequisite
+
+Before diving in, read this comprehensive guide:
+
+<Cards>
+  <Card
+    href="https://stack.convex.dev/intro-to-migrations"
+    title="Intro to Migrations"
+    description="Understand migration fundamentals"
+  />
+</Cards>
+
+Kaizen ships with migrations preconfigured.
+
+You don’t need to set anything up — it’s already wired:
+
+- `@convex-dev/migrations` is in `package.json` with scripts.
+- `convex/convex.config.ts` calls `app.use(migrations)`.
+- `convex/migrations.ts` defines `run`, `runIt`, and `runAll` (bound to example migrations).
+
+Schemas evolve. It's inevitable. The schema you started with for your MVP will eventually need to evolve over time as you add more features, fix bugs, and improve the product.
+
+Convex comes with as easy-to-use migrations system that allows you to change your schema in `convex/schema.ts` and then migrate any existing data safely.
+
+Let's go through an example migration so that it's crystal clear how we can make changes to our Database Schema safely.
+
+## Example Migration
+
+We'll walkthrough an example migration so that it's crystal clear how we can make changes to our Database Schema safely.
+
+Let's say we're adding an “admin area" to our application.
+
+So we decide that users need a `role` property. We don’t want downtime and we don’t want to break existing users. No problem — here’s how this flows.
+
+### 1. Update Schema
+
+File: `convex/schema.ts`
+
+<Tabs items={['Before (no role)', 'After Migration (Optional Role)', 'After Migration (Required Role)']}>
+  <Tab value="Before (no role)">
+    ```ts
+    import { defineSchema, defineTable } from "convex/server";
+    import { v } from "convex/values";
+
+    export default defineSchema({
+      users: defineTable({
+        name: v.optional(v.string()),
+        email: v.optional(v.string()),
+        tokenIdentifier: v.string(),
+      }).index("by_token", ["tokenIdentifier"]),
+      // ... other tables
+    });
+    ```
+  </Tab>
+  <Tab value="After Migration (Optional Role)">
+    ```ts
+    users: defineTable({
+      name: v.optional(v.string()),
+      email: v.optional(v.string()),
+      tokenIdentifier: v.string(),
+      role: v.optional(
+        v.union(v.literal("member"), v.literal("admin"))
+      ),
+    }).index("by_token", ["tokenIdentifier"]),
+    ```
+  </Tab>
+  <Tab value="After Migration (Required Role)">
+    ```ts
+    users: defineTable({
+      name: v.optional(v.string()),
+      email: v.optional(v.string()),
+      tokenIdentifier: v.string(),
+      role: v.union(v.literal("member"), v.literal("admin")),
+    }).index("by_token", ["tokenIdentifier"]),
+    ```
+  </Tab>
+</Tabs>
+
+### 2. Update New User Creation
+
+From this point on, every new user should have a role, so the backfill only needs to fix older rows.
+
+File: `convex/users.ts` (insert path where you create a user)
+
+```ts
+// inside your insert, add role: "member"
+const userId = await ctx.db.insert("users", {
+  name: identity.name,
+  email: identity.email,
+  tokenIdentifier: identity.subject,
+  role: "member", // <-- new write path during migration window
+});
+```
+
+### 3. Create Migration
+
+File: `convex/migrations.ts`
+
+```ts
+export const setDefaultUserRole = migrations.define({
+  table: "users",
+  migrateOne: async (ctx, user: any) => {
+    if (user.role === undefined) {
+      await ctx.db.patch(user._id, { role: "member" });
+    }
+  },
+});
+```
+
+Tip: You can also filter to a subset using `customRange` with an index if needed.
+
+### 4. Run Migration
+
+Local dev (regenerate types):
+
+```bash
+bunx convex dev
+```
+
+Run the migration (one-off):
+
+```bash
+bun run migrations:run -- '{"fn":"migrations:setDefaultUserRole"}'
+```
+
+Useful operations:
+
+```bash
+# Dry run a single batch (no writes committed)
+bun run migrations:run -- '{"fn":"migrations:setDefaultUserRole","dryRun":true}'
+
+# Watch live status
+bun run migrations:status
+
+# Restart from beginning
+bun run migrations:run -- '{"fn":"migrations:setDefaultUserRole","cursor":null}'
+
+# Cancel a running migration
+bun run migrations:cancel -- '{"name":"migrations:setDefaultUserRole"}'
+```
+
+Production deploy + run (example):
+
+```bash
+npx convex deploy --cmd 'bun run build' && \
+  npx convex run convex/migrations.ts:run --prod '{"fn":"migrations:setDefaultUserRole"}'
+```
+
+### 5. Finalize Schema
+
+Once status shows complete and you’re confident new writes include `role`, change `role` to required in `convex/schema.ts` (see step 1 “After”). Remove any temporary branching in your app code. Re-deploy. Done.
+
+## Best practices
+
+- Keep migrations idempotent where possible; guard with `if (...)` checks.
+- Prefer widening schema first, then data backfill, then tightening.
+- Ship small, targeted migrations; avoid broad parallelization initially.
+- Write app code that handles both shapes during the migration window.
+- Test with `dryRun` on a small batch before running for real.
+

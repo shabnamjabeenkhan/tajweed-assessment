@@ -1,0 +1,169 @@
+---
+title: 'Authentication Setup ✅'
+description: 'Enable user authentication and database functionality with Clerk and Convex'
+icon: Shield
+---
+
+<Note>
+  Last updated on: 11th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Update Configuration
+
+Modify `config.ts` to enable authentication and database:
+
+```typescript
+export const config: AppConfig = {
+  features: {
+    auth: true,        // ✅ Enable authentication
+    payments: false,   
+    convex: true,      // ✅ Enable database
+    email: false,      
+    monitoring: false, 
+  },
+  services: {
+    clerk: {
+      enabled: true,   // ✅ Enable Clerk
+      publishableKey: process.env.VITE_CLERK_PUBLISHABLE_KEY,
+      secretKey: process.env.CLERK_SECRET_KEY,
+    },
+    convex: {
+      enabled: true,   // ✅ Enable Convex
+      deployment: process.env.CONVEX_DEPLOYMENT,
+      url: process.env.VITE_CONVEX_URL,
+    },
+  },
+  ui: {
+    showAuth: true,    // ✅ Show auth pages
+    showPricing: false,
+    showDashboard: true,
+    showChat: false,
+  },
+};
+```
+
+## Set Up Convex
+
+<Steps>
+<Step>
+
+### Start Convex Development Server
+```bash
+bunx convex dev
+```
+
+- Follow the prompts to login to Convex and create a Cloud Deployment
+- Create new project when prompted (Cloud Deployment)
+- This auto-updates your `.env.local` file with the `VITE_CONVEX_URL` and `CONVEX_DEPLOYMENT`
+
+</Step>
+
+<Step>
+
+### Keep Convex Running
+The `bunx convex dev` command should keep running in a separate terminal. It provides the local database server.
+
+</Step>
+</Steps>
+
+## Configure Clerk Authentication
+
+<Steps>
+
+<Step>
+
+### Create a Clerk Application
+
+- Go to [Clerk](https://clerk.com)
+- Click `Sign Up` to Create an Account (if you don't already have an account)
+- Create a new Application
+- Keep the default Authentication options (Email/Password and Google)
+- Click `Create application`
+- Navigate: `Configure` → Scroll down to the `Developers` section.
+- Click on `API Keys`
+- Click the dropdown menu and select `React Router`
+- Copy your `VITE_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from the container shown
+
+</Step>
+
+<Step>
+
+### Add Clerk Environment Variables
+Add to your `.env.local`:
+```bash
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+```
+
+</Step>
+
+<Step>
+
+### Set Up JWT Template for Convex
+Go to your [Clerk Dashboard](https://clerk.com)
+
+- Navigate: `Configure` → `JWT Templates`
+- Click `New template` → Select `convex`
+- Click `Save` (important!)
+- Copy the `Issuer` URL (looks like `https://your-app.clerk.accounts.dev`)
+
+</Step>
+
+<Step>
+
+### Configure Convex with Clerk
+
+Go to your Convex Dashboard → `Settings` → `Environment Variables`
+
+Add: `VITE_CLERK_FRONTEND_API_URL` with the Issuer URL from Clerk JWT template
+
+This enables Convex to verify Clerk JWT tokens.
+
+</Step>
+
+</Steps>
+
+## Restart Development Servers
+
+1. **Stop and Restart Web and Convex Servers**
+   ```bash
+   # Stop each terminal with Ctrl+C, then restart
+   bun run dev
+   bunx convex dev
+   ```
+
+2. **Verify Authentication Flow**
+   - Visit `http://localhost:5173`
+   - Click login/signup buttons
+   - Sign up with email/password or Google OAuth
+   - Should redirect to Clerk authentication
+   - After auth, should access dashboard
+
+## Common Issues
+
+### Clerk Authentication Not Working
+- Verify JWT template created and saved in Clerk Dashboard
+- Check `VITE_CLERK_FRONTEND_API_URL` in Convex environment variables
+- Ensure Convex dev server is running
+
+### Database Connection Issues
+- Confirm `bunx convex dev` is running
+- Check `VITE_CONVEX_URL` and `CONVEX_DEPLOYMENT` in `.env.local`
+- Verify Convex project dashboard shows active deployment
+
+### Auth Pages Not Showing
+- Double-check `showAuth: true` in config
+- Restart dev server after config changes
+
+## Next Steps
+
+With authentication and database working, proceed to the next step to add subscription billing.

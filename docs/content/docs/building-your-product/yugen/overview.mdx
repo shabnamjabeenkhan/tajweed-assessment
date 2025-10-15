@@ -1,0 +1,54 @@
+---
+title: 'Overview'
+description: SaaS template for scalable applications
+icon: Sparkles
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+## What is Yugen?
+
+A starter kit that helps you build scalable software fast. At a high level, this template provides:
+
+- **Authentication** using BetterAuth
+- **Payments and subscriptions** with Polar.sh
+- **Drizzle ORM** so you can bring whatever relational database you prefer
+- **Deploys out of the box** to Cloudflare Workers (free hobby projects to high-volume services)
+
+## Project Structure That Scales
+
+The template implements a **pnpm workspace monorepo** that can truly scale with complexity. Design software as modular components that can be pieced together.
+
+### The `data-ops` Package
+
+The monorepo allows you to create lightweight packages of reusable code shared across multiple apps. Example: `data-ops` package contains all core logic for:
+
+- Managing Drizzle schemas
+- Creating database clients
+- Defining database queries
+
+These queries can be used in both the consumer-facing TanStack Start app and a separate backend service that handles long-running tasks.
+
+## Tech Stack
+
+- **TanStack Start** - Full-stack React framework
+- **BetterAuth** - Authentication framework
+- **Polar.sh** - Merchant of record for payments
+- **Drizzle ORM** - Type-safe database queries
+- **Cloudflare Workers** - Edge deployment
+
+## Two Core Services
+
+The template starts you with two services:
+
+1. **User Application** - UI and user-triggered transactions
+2. **Data Service** - Processing data and managing long-running background tasks (queue consumers, Durable Objects, workflows)
+
+## Getting Started
+
+Ready to build? Check out the [Getting Started](/docs/building-your-product/yugen/getting-started) guide.
+

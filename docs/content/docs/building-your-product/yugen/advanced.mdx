@@ -1,0 +1,47 @@
+---
+title: 'Advanced Features'
+description: Background tasks and long-running operations
+icon: Zap
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+All projects in Yugen have **two core services**:
+
+1. **User Application** - Contains UI, manages user-triggered transactions
+2. **Data Service** - Processing data, managing long-running background tasks
+
+### What Lives in the Data Service?
+
+- Queue consumers
+- Durable Objects
+- Workflows
+- Container-based workflows using Cloudflare Containers
+
+### Configure Durable Object
+
+```toml title="apps/data-service/wrangler.toml"
+// Copy Durable Object configuration
+```
+
+### Deploy Data Service
+
+```bash
+pnpm run deploy:data-service
+```
+
+### Shared Data-Ops Package
+
+Both user app and data service use the same `data-ops` package for type-safe database queries. Ensures consistency across services.
+
+## Next Steps
+
+You now have a complete understanding of Yugen's architecture:
+- Monorepo with shared packages
+- User application with auth and payments
+- Data service for background tasks
+- Deployable to Cloudflare Workers

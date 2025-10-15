@@ -1,0 +1,32 @@
+{
+  "title": "Building Your Product",
+  "description": "Guides and best practices",
+  "icon": "Hammer",
+  "root": true,
+  "pages": [
+    "index",
+    "getting-started/1-prerequisites",
+    "---Web Apps (Kaizen)---",
+    "setup/1-ramp-up",
+    "setup/2-project-setup",
+    "setup/3-documentation",
+    "setup/4-landing-page",
+    "setup/5-authentication-setup",
+    "setup/6-payments-setup",
+    "setup/7-email-setup",
+    "setup/8-ai-setup",
+    "setup/9-observability",
+    "setup/10-production-deployment",
+    "setup/11-solo-workflow",
+    "setup/12-team-worklow",
+    "---Development---",
+    "rapid-ui-prototyping",
+    "building-features",
+    "debugging-guide",
+    "database-migrations",
+    "performance",
+    "---Scaling---",
+    "self-hosting"
+  ]
+}
+

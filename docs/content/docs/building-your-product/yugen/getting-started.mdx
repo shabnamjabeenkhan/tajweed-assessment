@@ -1,0 +1,118 @@
+---
+title: 'Getting Started'
+description: Set up your Yugen project
+icon: Rocket
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+<Steps>
+<Step>
+
+### Create GitHub Repository
+Create a fresh, empty repository on GitHub (private recommended)
+
+Copy the SSH URL (not HTTPS): `git@github.com:username/repo-name.git`
+
+</Step>
+
+<Step>
+
+### Clone Yugen and Set Up Project
+```bash
+git clone https://github.com/code-and-creed/yugen.git my-app
+cd my-app
+rm -rf .git
+git init
+git remote add origin your-github-repo-url
+```
+
+</Step>
+
+</Steps>
+
+## Project Structure
+
+The project structure differs from other templates. The root directory has a limited number of files - this is a monorepo setup containing multiple apps and packages.
+
+```
+my-app/
+├── apps/
+│   ├── user/              # Consumer-facing TanStack Start app
+│   └── data-service/      # Backend service for long-running tasks
+├── packages/
+│   └── data-ops/          # Shared database logic
+└── pnpm-workspace.yaml
+```
+
+## Setup
+
+<Steps>
+<Step>
+
+### Install Dependencies and Build
+
+```bash
+pnpm run setup
+```
+
+This installs all dependencies and builds the `data-ops` package used by the apps.
+
+</Step>
+
+<Step>
+
+### Start Development Server
+
+```bash
+pnpm run dev:user
+```
+
+The TanStack Start app will start. You can rename this app if you like - the name showcases that it's the app users will interact with.
+
+</Step>
+
+<Step>
+
+### Documentation UI
+
+The UI acts as documentation for setting things up. Once you get your database and authentication set up, delete the documentation pages:
+
+```bash
+# Delete the kit-content folder and files within the static route
+rm -rf apps/user/app/routes/kit-content
+rm -rf apps/user/app/routes/static
+```
+
+</Step>
+</Steps>
+
+## Deploy Early (Motivating!)
+
+Before setting up the database, deploy the application right away:
+
+```bash
+pnpm run deploy:user
+```
+
+This deploys to Cloudflare Workers (requires Cloudflare account). Cloudflare gives you a URL to view your deployment.
+
+### Customize Cloudflare Worker Name
+
+```toml title="apps/user/wrangler.toml"
+name = "my-app"  # Change this
+```
+
+You can also add custom domains associated with your Cloudflare account by adding a route to this file.
+
+## Next Steps
+
+1. [Database Setup](/docs/building-your-product/yugen/database)
+2. [Authentication Setup](/docs/building-your-product/yugen/authentication)
+3. [UI Customization](/docs/building-your-product/yugen/ui-customization)
+4. [Payments Setup](/docs/building-your-product/yugen/payments)
+

@@ -1,0 +1,97 @@
+---
+title: 'AI Setup ✅'
+description: 'Enable simple AI-powered chat functionality with OpenAI'
+icon: Bot
+---
+
+<Note>
+  Last updated on: 11th October 2025
+</Note>
+
+<Note>
+  This is an optional add-on to your Web App. You can skip this step if you don't want to set up AI for now.
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+## Update Configuration
+
+Enable AI chat in `config.ts`:
+
+```typescript
+export const config: AppConfig = {
+  features: {
+    auth: true,
+    payments: true,
+    convex: true,
+    email: true,
+    monitoring: false,
+  },
+  services: {
+    clerk: { enabled: true },
+    polar: { enabled: true },
+    convex: { enabled: true },
+    resend: { enabled: true },
+    openai: {
+      enabled: true,    // ✅ Enable OpenAI
+      apiKey: process.env.OPENAI_API_KEY,
+    },
+  },
+  ui: {
+    showAuth: true,
+    showPricing: true,
+    showDashboard: true,
+    showChat: true,     // ✅ Show AI chat
+  },
+};
+```
+
+## 1. Set Up OpenAI Account
+
+1. **Create OpenAI Account**
+   - Go to [openai.com](https://openai.com)
+   - Sign up and complete verification
+
+2. **Generate API Key**
+   - Navigate to the **API Keys** section in the OpenAI Dashboard
+   - Create new secret key
+   - Copy the key (starts with `sk-`)
+
+## 2. Configure Environment Variables
+
+1. **Add to Local Environment**
+   ```bash
+   OPENAI_API_KEY=sk-...
+   ```
+
+2. **Add to Convex Environment Variables**
+   - Navigate to the Convex Dashboard → `Settings` → `Environment Variables`
+   - Add: `OPENAI_API_KEY=sk-...`
+
+## 3. Test AI Chat Functionality
+
+1. **Restart Development Server**
+   ```bash
+   bun run dev
+   ```
+
+2. **Access AI Chat**
+   - Navigate to `/dashboard` (must be authenticated)
+   - Go to `/dashboard/chat`
+   - Type a message and test conversation
+
+3. **Verify AI Responses**
+   - Should receive coherent responses from GPT ✅
+   - Chat history should persist in database ✅
+   - Real-time updates should work ✅
+
+## Next Steps
+
+With all core features configured, proceed to the next step to deploy your application.

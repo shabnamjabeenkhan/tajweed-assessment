@@ -1,0 +1,300 @@
+---
+title: 'Building Features ✅'
+description: Build features efficiently with spec-driven development
+icon: GitBranch
+---
+
+<Note>
+  Last updated on: 9th October 2025
+</Note>
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  ToDos: 
+    - Record video for this page
+</Callout>
+
+<YouTube id="UqJJktxCY9U" />
+
+<Warning>
+**DO NOT upgrade any dependencies in your package.json** for the core stack dependencies (Clerk, Convex, Polar.sh, etc.), unless you have a specific reason to and are following the official migration guides from each service. Upgrading packages without proper migration can break your authentication, database interaction logic, and other critical functionality. The current versions in the boilerplate are tested and stable together.
+</Warning>
+
+We need to be methodical and avoid hallucinations, as much as possible. Spec-driven development is the future.
+
+<Steps>
+<Step>
+
+#### Create Feature Branch
+
+Always start with `git checkout -b feature/your-feature-name`
+
+</Step>
+
+<Step>
+
+#### Research
+
+Before planning, research the codebase to understand existing patterns and find relevant files. Use this prompt to ask the agent to use RepoPrompt MCP:
+
+<Note>
+   RepoPrompt has the best context-builder, which is why we use it. However, if you don't have a paid RepoPrompt subscription, just delete the line that says `Please use the RepoPrompt MCP to:` You'll be relying on your agent's ability to pull in the right context which will work fine for most cases.
+</Note>
+
+```
+Research this feature: [DETAILED_FEATURE_DESCRIPTION]
+
+Please use the RepoPrompt MCP to:
+1. Search for existing patterns related to [BRIEF_FEATURE_DESCRIPTION] using semantic search
+2. Find all relevant files, components, and utilities that might be involved
+3. Generate a code map of the current architecture to understand how this feature fits
+4. Identify any existing APIs, database schemas, or integrations that need to be considered (and search the web for additional APIs or providers we would need)
+5. List potential conflicts or dependencies with existing features
+
+Focus on:
+- Similar features or patterns already implemented
+- Database schema and Convex functions
+- API routes and authentication patterns
+- UI components and styling approaches
+- Configuration and environment setup
+- Testing patterns and error handling
+
+Create a markdown file called 'feature-research.md' that contains a comprehensive overview of the current system as it relates to this feature.
+```
+
+This research step ensures the agent has controlled context and understands the existing codebase before planning.
+
+</Step>
+
+<Step>
+
+#### High-Level Planning
+
+<Note>
+  Model/s: `gpt-5-high`
+</Note>
+
+Attach the Cursor rule file `/.cursor/rules/feature_planning.mdc` to your AI agent and use this prompt:
+
+```
+Plan the feature based on the research in feature-research.md
+
+IMPORTANT: Use MCP servers to gather additional context and documentation:
+
+1. **For third-party libraries**: Use Context7 MCP Server
+   - Call `mcp_context7_resolve-library-id` to find the correct library ID
+   - Call `mcp_context7_get-library-docs` to get up-to-date documentation
+   - Focus on: integration patterns, authentication flows, rate limits, error handling
+
+2. **For newer/niche libraries**: Use Firecrawl MCP Server
+   - Call `mcp_Firecrawl_Scraper_firecrawl_scrape` to fetch documentation from official websites
+   - Extract: implementation guides, best practices, security considerations
+
+3. **For codebase analysis**: Use RepoPrompt MCP Server
+   - Call `mcp_repoprompt_search` for semantic search of existing patterns
+   - Call `mcp_repoprompt_get_codemap` for structural understanding
+   - Call `mcp_repoprompt_request_plan` for architectural guidance
+
+Follow the feature_planning.mdc rule to:
+- Ask targeted questions about requirements, edge cases, and acceptance criteria
+- Identify potential conflicts with existing features
+- Plan integration with React Router v7, Convex, Clerk, and Tailwind CSS
+- Create a comprehensive feature specification in the docs site
+- Create a manual testing strategy for the feature
+
+Be very explicit at the end about the manual testing strategy for the feature so that there is a clear way to test the feature actually works once it's implemented.
+```
+
+The agent will create a detailed specification that eliminates ambiguity and edge cases.
+</Step>
+
+<Step>
+
+#### Detailed Specification
+
+Based on the agent rules, it will ask you a set of targeted questions about requirements, edge cases, and acceptance criteria for you to answer and help it refine the spec.
+
+Answer the questions clearly and concisely.
+
+- The agent will produce a concise spec (with diagrams and relevant code snippets)
+- The agent will create a new page for the feature under the docs site's Project Documentation → Features section
+  - Section: "Features" (will create it if it doesn't already exist)
+  - Page: one page per feature (named after the feature, example: `feature-name.mdx`)
+
+</Step>
+
+<Step>
+
+#### Implementation
+
+<Note>
+  Model/s: `gpt-5-codex`, `claude-sonnet-4.5`
+</Note>
+
+Execute the plan based on the detailed specification. Use this prompt to ensure the agent fetches up-to-date documentation and avoids hallucinations:
+
+```
+Implement the feature based on the specification in [FEATURE_NAME].mdx
+
+IMPORTANT: Use MCP servers to fetch current documentation for any libraries/APIs you need:
+
+1. **For popular libraries/frameworks**: Use Context7 MCP Server
+   - Call `mcp_context7_resolve-library-id` to find the correct library ID
+   - Call `mcp_context7_get-library-docs` to get up-to-date documentation
+   - Focus on: installation, configuration, API usage, best practices, common pitfalls
+
+2. **For newer/niche libraries that aren't in Context7**: Use Firecrawl MCP Server
+   - Call `mcp_Firecrawl_Scraper_firecrawl_scrape` to fetch documentation from official websites
+   - Extract: setup guides, API references, code examples, migration guides
+
+3. **For codebase context**: Use RepoPrompt MCP Server
+   - Call `mcp_repoprompt_search` for semantic search of existing patterns
+   - Call `mcp_repoprompt_get_codemap` for structural understanding
+   - Call `mcp_repoprompt_read_file` for specific file analysis
+
+Before implementing:
+- Fetch documentation for ALL external dependencies
+- Review existing patterns in the codebase
+- Follow the established architecture and conventions
+- Implement with proper error handling and edge cases
+- Include TypeScript types and proper imports
+
+Focus on:
+- React Router v7 patterns (loaders, actions, components)
+- Convex functions and schema updates
+- Clerk authentication integration
+- Tailwind CSS styling
+- TypeScript strict mode compliance
+```
+
+This ensures the agent has current documentation and follows established patterns.
+
+</Step>
+
+<Step>
+
+#### Code Review & Testing
+
+Run the following checks:
+
+- Run `bun run build` to verify builds pass
+- Run `bun run typecheck` for TypeScript validation
+- Use `bunx convex dev --once` to validate Convex functions
+- Test UI changes with Cursor Browser if using Cursor IDE
+
+Review changes with CodeRabbit CLI, then fix issues with `cheetah`:
+
+**Step 1: Run CodeRabbit CLI Review**
+```bash
+coderabbit --prompt-only
+```
+
+**Step 2: Fix Issues with AI Agent**
+Use this prompt with `cheetah`:
+
+```
+Review and fix the code issues identified by CodeRabbit CLI
+
+IMPORTANT: Use MCP servers to ensure fixes are based on current best practices:
+
+1. **For library-specific fixes**: Use Context7 MCP Server
+   - Call `mcp_context7_resolve-library-id` to find the correct library ID
+   - Call `mcp_context7_get-library-docs` to get up-to-date documentation
+   - Focus on: proper usage patterns, deprecated methods, security best practices
+
+2. **For newer/niche libraries**: Use Firecrawl MCP Server
+   - Call `mcp_Firecrawl_Scraper_firecrawl_scrape` to fetch current documentation
+   - Extract: migration guides, breaking changes, security updates
+
+3. **For codebase context**: Use RepoPrompt MCP Server
+   - Call `mcp_repoprompt_search` for similar patterns in the codebase
+   - Call `mcp_repoprompt_get_codemap` for structural understanding
+   - Call `mcp_repoprompt_read_file` for specific file analysis
+
+Focus on:
+- React Router v7 compliance and best practices
+- Convex function optimization and error handling
+- TypeScript strict mode compliance
+- Clerk authentication security patterns
+- Tailwind CSS responsive design
+- Performance optimization and accessibility
+
+Ensure all fixes maintain backward compatibility and follow established patterns.
+
+Remember to run `bun run build`, `bunx convex dev --once`, and `bun run typecheck` to verify the changes.
+```
+
+</Step>
+
+<Step>
+#### Update Project Documentation
+
+After implementation and review, update the project documentation in the Project Documentation tab.
+
+Use this prompt to help the agent update the project documentation:
+
+```
+IMPORTANT: Use MCP servers to gather current information and best practices:
+
+1. **For documentation standards**: Use Context7 MCP Server
+   - Call `mcp_context7_resolve-library-id` to find relevant library IDs
+   - Call `mcp_context7_get-library-docs` to get current documentation patterns
+   - Focus on: documentation structure, code examples, best practices
+
+2. **For external references**: Use Firecrawl MCP Server
+   - Call `mcp_Firecrawl_Scraper_firecrawl_scrape` to fetch current external documentation
+   - Extract: official guides, migration notes, breaking changes
+
+3. **For codebase analysis**: Use RepoPrompt MCP Server
+   - Call `mcp_repoprompt_search` for implementation patterns
+   - Call `mcp_repoprompt_get_codemap` for structural changes
+   - Call `mcp_repoprompt_read_file` for specific implementation details
+
+ACTUALLY UPDATE these documentation files in the Project Documentation tab:
+
+**Features**: 
+- Update or create the feature page with implementation status
+- Add screenshots and demo links
+- Link to relevant PRs and commits
+- Document any deviations from the original spec
+
+**Architecture**:
+- Update architecture documentation with new decisions and tradeoffs
+- Document new patterns or conventions established
+- Update system diagrams if needed
+
+**User Flows**:
+- Update impacted user flows
+- Add new user journey maps
+- Document edge cases and error states
+
+**Database Schema**:
+- Update schema documentation with new fields, indexes, and relationships
+- Document migration strategies
+- Update Convex function documentation
+
+**Learnings**:
+- Add new learnings to the learnings documentation
+- Capture gotchas and implementation challenges
+- Document best practices discovered
+- Note performance considerations
+- Record security considerations
+
+Make actual changes to the documentation files, don't just provide guidance.
+```
+
+The agent will make real updates to the project documentation files in the Project Documentation tab.
+
+</Step>
+</Steps>
+
+## Safe for merge?
+
+Test the change manually.
+
+Only once you're confident that the change is safe for merge, you can merge it into main.
+
+<Note>
+   Feature flagging is coming soon (https://www.convex.dev/can-do/feature-flags)
+</Note>

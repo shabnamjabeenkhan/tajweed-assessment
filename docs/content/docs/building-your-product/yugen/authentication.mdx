@@ -1,0 +1,200 @@
+---
+title: 'Authentication'
+description: Implement authentication using BetterAuth
+icon: Shield
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+<Callout title="Work in Progress" type="warning">
+  This page is currently under construction. Some information may be incomplete or subject to change.
+</Callout>
+
+BetterAuth is not a managed auth provider like WorkOS or Clerk. It's more like an **auth framework** with three core layers:
+
+1. **Authentication Layer** - Choose how you want to set up sign-on. With a few lines of serverside code, your service handles the entire OAuth flow for dozens of social providers.
+
+2. **API Layer** - Bleeds into your serverside business logic. Tells you information about a session and signed-in user. Use this to build generic middleware or serverside logic to manage access control.
+
+3. **Client Side Layer** - Provides hooks to manage sign-in flow, conditionally render based on authentication, and build your own account UI components.
+
+**Auth becomes easier** when you mentally break it into these three layers. BetterAuth implements these layers well and lets you extend any layer with custom plugins.
+
+### Plugins
+
+- Build custom plugins for niche problems
+- Out-of-the-box plugins: admin features, organization-based data model, clean plugin for handling MCP auth flows
+
+## Google OAuth Setup
+
+We're integrating Google sign-in as it's the social connection that converts best.
+
+<Steps>
+<Step>
+
+#### Environment Variables
+
+Copy the dummy environment variables:
+
+```bash title="apps/user/.env"
+BETTER_AUTH_SECRET=your-secret-key  # Used for JWT signing
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
+
+**Generate secure secret:** Use a tool like OpenSSL to generate a secure random code.
+
+```bash
+openssl rand -base64 32
+```
+
+</Step>
+
+<Step>
+
+#### Google Cloud Console
+
+In the Google section of BetterAuth docs, you'll see instructions to create a Google Cloud Console project (free). It specifies callbacks you'll need.
+
+1. Create client credentials in Google Cloud Console
+2. Copy redirect URL for local development from BetterAuth docs
+3. Add your own domain as authorized redirect URL
+4. Collect client ID and secret → add to environment variables
+
+</Step>
+</Steps>
+
+## BetterAuth Configuration
+
+<Steps>
+<Step>
+
+#### Create auth.ts
+
+Copy the BetterAuth CLI code into `auth.ts` file in the config folder:
+
+```ts title="packages/data-ops/config/auth.ts"
+// Copy from template
+```
+
+The BetterAuth CLI uses this file to generate Drizzle schemas for auth tables.
+
+**Setup differs slightly from BetterAuth docs:** Helper functions in the `data-ops` package allow you to reuse the BetterAuth client for:
+- Managing schemas via BetterAuth CLI
+- Integrating into your actual service
+
+</Step>
+
+<Step>
+
+#### Generate Auth Tables
+
+```bash
+cd packages/data-ops
+npx better-auth generate
+```
+
+This generates Drizzle schemas for BetterAuth tables.
+
+</Step>
+
+<Step>
+
+#### Generate Drizzle Migrations
+
+After Drizzle schemas are generated:
+
+```bash
+pnpm run generate
+```
+
+**May encounter error:** If it references a dummy schema, fix by deleting the `meta` folder and SQL file. Then run generate again.
+
+You'll see a new SQL file with actual table create queries.
+
+</Step>
+
+<Step>
+
+#### Apply Migrations
+
+Either:
+- Copy SQL file and run in your SQL editor, or
+- Run: `pnpm run migrate`
+
+</Step>
+
+<Step>
+
+#### Build and Configure User App
+
+```bash
+pnpm run build  # Build data-ops package
+cd apps/user
+```
+
+Paste same environment variables into user app `.env` and run:
+
+```bash
+pnpm run cf-typegen
+```
+
+</Step>
+</Steps>
+
+## Integration
+
+<Steps>
+<Step>
+
+#### server.ts
+
+In BetterAuth docs, find example of using the `setAuth` method inside the fetch handler.
+
+```ts title="apps/user/app/server.ts"
+// Copy from template - shows setAuth in fetch handler
+```
+
+</Step>
+
+<Step>
+
+#### API Route
+
+Find the `$/auth` API route and implement auth handlers. This is a **generic BetterAuth path** for all BetterAuth integrations.
+
+```ts title="apps/user/app/routes/$/auth.ts"
+// Copy from template
+```
+
+</Step>
+
+<Step>
+
+#### React Components
+
+In the components folder, there are already React components that use the BetterAuth client to:
+- Implement sign-on flow
+- Handle conditional rendering based on signed-in status
+
+```tsx title="apps/user/app/components/auth/*"
+// Copy from template
+```
+
+</Step>
+</Steps>
+
+## Test Authentication
+
+1. Go through the sign-on flow with Google
+2. Currently redirects to homepage after sign-in (you can customize this)
+3. Log out
+4. Head to `/app` - this path is **guarded** and only accessible if signed in
+5. After signing in again, you're redirected to a protected dummy dashboard
+
+At this point, you have basic auth built out and can customize the flow however you want.
+
+## Next Steps
+
+- [UI Customization](/docs/building-your-product/yugen/ui-customization) - Customize the authentication UI
+- [Payments Setup](/docs/building-your-product/yugen/payments) - Add subscriptions

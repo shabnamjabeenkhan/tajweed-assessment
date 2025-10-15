@@ -1,0 +1,30 @@
+{
+  "title": "Running a Tech Company",
+  "description": "Plan, build, launch and scale your company",
+  "icon": "Rocket",
+  "root": true,
+  "pages": [
+    "index",
+    "---Introduction---",
+    "prerequisites",
+    "company-building/philosophy",
+    "company-building/company-setup",
+    "---Core---",
+    "company-building/founder",
+    "company-building/idea-validation",
+    "company-building/tech-stack",
+    "company-building/mvp-development",
+    "company-building/beta-testing",
+    "company-building/user-feedback",
+    "company-building/customer-support",
+    "company-building/analytics-setup",
+    "company-building/marketing",
+    "company-building/scaling",
+    "company-building/exiting",
+    "---Working in a Team---",
+    "communication/communication",
+    "communication/managing-conflict",
+    "communication/pr-reviews",
+    "communication/investors"
+  ]
+}
