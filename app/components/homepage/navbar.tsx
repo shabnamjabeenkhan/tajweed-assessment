@@ -11,14 +11,7 @@ const getMenuItems = () => {
   const items = [
   { name: "Home", href: "#hero" },
   { name: "Features", href: "#features" },
-  { name: "Changelog", href: "/changelog" },
-  { name: "Documentation", href: "/docs", external: true },
   ];
-
-  // Only show pricing if payments are enabled
-  if (isFeatureEnabled('payments') && config.ui.showPricing) {
-    items.push({ name: "Pricing", href: "#pricing" });
-  }
 
   return items;
 };
@@ -31,19 +24,8 @@ export const Navbar = ({
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isDashboardLoading, setIsDashboardLoading] = useState(false);
-  const [menuItems, setMenuItems] = React.useState(getMenuItems());
+  const menuItems = getMenuItems();
 
-  // Update docs URL on client side
-  React.useEffect(() => {
-    const isDev = window.location.hostname === 'localhost';
-    const docsUrl = isDev ? 'http://localhost:3000/docs' : `${window.location.origin}/docs`;
-    
-    setMenuItems((prevItems) => 
-      prevItems.map((item) => 
-        item.name === "Documentation" ? { ...item, href: docsUrl } : item
-      )
-    );
-  }, []);
 
   React.useEffect(() => {
     // Use RAF for smooth scroll updates
@@ -159,7 +141,7 @@ export const Navbar = ({
                 {menuItems.map((item, index) => (
                   <li key={index}>
                     <div
-                      onClick={() => handleNavClick(item.href, item.external)}
+                      onClick={() => handleNavClick(item.href)}
                       className="hover:cursor-pointer text-muted-foreground flex items-center h-8 duration-150 transition-colors"
                     >
                       <span>{item.name}</span>
@@ -175,7 +157,7 @@ export const Navbar = ({
                   {menuItems.map((item, index) => (
                     <li key={index}>
                       <button
-                        onClick={() => handleNavClick(item.href, item.external)}
+                        onClick={() => handleNavClick(item.href)}
                         className="text-muted-foreground hover:cursor-pointer  block duration-150 transition-colors w-full text-left"
                       >
                         <span>{item.name}</span>
