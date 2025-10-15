@@ -4,6 +4,29 @@ export default function FooterSection() {
   return (
     <footer className="py-16 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
+        {/* Policy Links */}
+        <div className="mb-8 flex flex-wrap justify-center gap-6 text-sm">
+          <Link
+            to="/privacy"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          <Link
+            to="/terms"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Terms of Service
+          </Link>
+          <Link
+            to="/refund"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            Refund Policy
+          </Link>
+        </div>
+
+        {/* Social Links */}
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
             to="https://x.com/_7obaid_/"
@@ -26,9 +49,10 @@ export default function FooterSection() {
             </svg>
           </Link>
         </div>
+
+        {/* Copyright */}
         <span className="text-muted-foreground block text-center text-sm">
-          {" "}
-          © {new Date().getFullYear()} Kaizen 改善, All rights reserved
+          © {new Date().getFullYear()} Tajweed Quiz, All rights reserved
         </span>
       </div>
     </footer>

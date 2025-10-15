@@ -20,6 +20,11 @@ const routes: RouteConfig = [
   // Pricing routes (always included, conditionally rendered)
   route("pricing", "routes/pricing.tsx"),
   route("success", "routes/success.tsx"),
+
+  // Policy routes (always available)
+  route("privacy", "routes/privacy.tsx"),
+  route("terms", "routes/terms.tsx"),
+  route("refund", "routes/refund.tsx"),
   
   // Dashboard routes (always included)
   layout("routes/dashboard/layout.tsx", [
