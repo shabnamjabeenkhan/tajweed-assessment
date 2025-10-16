@@ -10,7 +10,6 @@ import { config, isFeatureEnabled } from "../../../config";
 const getMenuItems = () => {
   const items = [
   { name: "Home", href: "#hero" },
-  { name: "Features", href: "#features" },
   ];
 
   return items;
@@ -106,11 +105,10 @@ export const Navbar = ({
       >
         <div
           className={cn(
-            "mx-auto mt-2 max-w-6xl px-6 lg:px-12",
+            "mx-auto mt-2 max-w-6xl px-6 lg:px-12 bg-neutral-950",
             isScrolled &&
               "max-w-4xl rounded-2xl border backdrop-blur-sm lg:px-5 shadow-lg transition-[max-width,background-color,backdrop-filter] duration-150"
           )}
-          style={{ backgroundColor: '#1b1c1d' }}
         >
           {/* Temporary debug indicator */}
           {/* <div className="absolute top-0 left-0 bg-red-500 text-white px-2 py-1 text-xs z-10">
@@ -124,7 +122,8 @@ export const Navbar = ({
                 className="flex items-center space-x-2 font-semibold text-xl text-muted-foreground"
                 prefetch="viewport"
               >
-                <img src="/kaizen-no-bg.svg" alt="Kaizen Logo" className="w-18 h-18" />
+                Tajweed Simplified
+                {/* <img src="/kaizen-no-bg.svg" alt="Kaizen Logo" className="w-18 h-18" /> */}
               </Link>
 
               <button
@@ -137,20 +136,6 @@ export const Navbar = ({
               </button>
             </div>
 
-            <div className="hidden lg:flex flex-1 items-center justify-center">
-              <ul className="flex h-8 items-center gap-8 text-sm leading-none">
-                {menuItems.map((item, index) => (
-                  <li key={index}>
-                    <div
-                      onClick={() => handleNavClick(item.href)}
-                      className="hover:cursor-pointer text-muted-foreground flex items-center h-8 duration-150 transition-colors"
-                    >
-                      <span>{item.name}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
             <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
@@ -168,10 +153,6 @@ export const Navbar = ({
                 </ul>
               </div>
               <div className="flex w-full flex-col items-center space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Lock className="w-4 h-4" />
-                  <span className="hidden sm:inline">Private Repo</span>
-                </div>
                 {authEnabled && loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3 self-center">
                     <Button 
