@@ -3,12 +3,10 @@ import Integrations from "~/components/homepage/integrations";
 import { api } from "../../convex/_generated/api";
 import type { Route } from "./+types/home";
 import { Suspense, lazy } from 'react';
-import { ContentSkeleton, FeatureSkeleton } from '~/components/ui/skeleton';
+import { ContentSkeleton } from '~/components/ui/skeleton';
 
 // Lazy load components below the fold
 const ContentSection = lazy(() => import("~/components/homepage/content"));
-const CoreFeaturesSection = lazy(() => import("~/components/homepage/core-features"));
-const InhouseTools = lazy(() => import("~/components/homepage/inhouse-tools"));
 const Footer = lazy(() => import("~/components/homepage/footer"));
 
 export function meta({}: Route.MetaArgs) {
@@ -106,20 +104,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <Integrations loaderData={loaderData} />
       <Suspense fallback={<ContentSkeleton />}>
         <ContentSection />
-      </Suspense>
-      <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6"><FeatureSkeleton /><FeatureSkeleton /><FeatureSkeleton /></div>}>
-        <CoreFeaturesSection />
-      </Suspense>
-      <div className="my-6 flex justify-center">
-        <div
-          aria-hidden
-          className="size-12 rounded-full border bg-background text-muted-foreground shadow-sm grid place-items-center text-2xl font-semibold"
-        >
-          +
-        </div>
-      </div>
-      <Suspense fallback={<ContentSkeleton />}>
-        <InhouseTools />
       </Suspense>
       <Suspense fallback={<div className="h-32 bg-muted" />}>
         <Footer />

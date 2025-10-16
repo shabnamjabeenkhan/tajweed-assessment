@@ -1,8 +1,7 @@
-import { memo } from "react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 import { Navbar } from "./navbar";
+import { GlowCard } from "~/components/ui/spotlight-card";
 
 export default function IntegrationsSection({
   loaderData,
@@ -32,21 +31,80 @@ export default function IntegrationsSection({
               {/* Tajweed Rules Visual */}
               <div className="relative p-8">
                 <div className="mx-auto mb-4 flex w-fit justify-center gap-3">
-                  <TajweedCard rule="إِدْغَام" name="Idgham" />
-                  <TajweedCard rule="إِخْفَاء" name="Ikhfa" />
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        إِدْغَام
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Idgham
+                      </div>
+                    </div>
+                  </GlowCard>
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        إِخْفَاء
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Ikhfa
+                      </div>
+                    </div>
+                  </GlowCard>
                 </div>
                 <div className="mx-auto my-4 flex w-fit justify-center gap-3">
-                  <TajweedCard rule="قَلْقَلَة" name="Qalqalah" />
-                  <TajweedCard
-                    rule="مَدّ"
-                    name="Madd"
-                    highlight={true}
-                  />
-                  <TajweedCard rule="غُنَّة" name="Ghunna" />
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        قَلْقَلَة
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Qalqalah
+                      </div>
+                    </div>
+                  </GlowCard>
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        مَدّ
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Madd
+                      </div>
+                    </div>
+                  </GlowCard>
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        غُنَّة
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Ghunna
+                      </div>
+                    </div>
+                  </GlowCard>
                 </div>
                 <div className="mx-auto flex w-fit justify-center gap-3">
-                  <TajweedCard rule="نُون سَاكِنَة" name="Noon Sakinah" />
-                  <TajweedCard rule="تَنْوِين" name="Tanween" />
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        نُون سَاكِنَة
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Noon Sakinah
+                      </div>
+                    </div>
+                  </GlowCard>
+                  <GlowCard customSize width={96} height={96} glowColor="green" className="w-24 h-24">
+                    <div className="flex flex-col items-center justify-center h-full">
+                      <div className="text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        تَنْوِين
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: '#114b3c' }}>
+                        Tanween
+                      </div>
+                    </div>
+                  </GlowCard>
                 </div>
 
                 {/* Quiz Progress Indicator */}
@@ -70,7 +128,7 @@ export default function IntegrationsSection({
               </div>
 
               <div className="flex flex-col gap-4 sm:flex-row sm:gap-2 justify-center sm:justify-start">
-                <Button size="lg" asChild>
+                <Button size="lg" asChild style={{ backgroundColor: '#114b3c', borderColor: '#114b3c' }} className="hover:bg-[#0f3d32]">
                   <Link to="/dashboard">
                     Start Learning Free
                   </Link>
@@ -104,38 +162,4 @@ export default function IntegrationsSection({
   );
 }
 
-const TajweedCard = memo(({
-  rule,
-  name,
-  highlight = false,
-}: {
-  rule: string;
-  name: string;
-  highlight?: boolean;
-}) => {
-  return (
-    <div
-      className={cn(
-        "bg-background relative flex flex-col items-center justify-center w-24 h-24 rounded-xl dark:bg-transparent hover:scale-105 transition-transform",
-        highlight && "ring-2 ring-emerald-500 ring-offset-2 ring-offset-background"
-      )}
-    >
-      <div
-        role="presentation"
-        className={cn(
-          "absolute inset-0 rounded-xl border border-black/20 dark:border-white/25",
-          highlight && "border-emerald-500/50"
-        )}
-      />
-      <div className="relative z-20 text-center space-y-1">
-        <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400 font-arabic">
-          {rule}
-        </div>
-        <div className="text-xs text-muted-foreground font-medium">
-          {name}
-        </div>
-      </div>
-    </div>
-  );
-});
 

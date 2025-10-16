@@ -43,10 +43,10 @@ export default function CoreFeaturesSection() {
           {/* Tajweed Learning Graphic */}
           <div className="mx-auto w-full max-w-md">
             <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl p-8 text-center">
-              <div className="text-6xl font-bold text-emerald-600 dark:text-emerald-400 mb-4 font-arabic">
+              <div className="text-6xl font-bold mb-4 font-arabic" style={{ color: '#114b3c' }}>
                 تَجْوِيد
               </div>
-              <div className="text-lg font-semibold text-emerald-800 dark:text-emerald-300">
+              <div className="text-lg font-semibold" style={{ color: '#114b3c' }}>
                 Tajweed
               </div>
               <div className="text-sm text-muted-foreground mt-2">
