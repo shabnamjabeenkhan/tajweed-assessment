@@ -108,8 +108,9 @@ export const Navbar = ({
           className={cn(
             "mx-auto mt-2 max-w-6xl px-6 lg:px-12",
             isScrolled &&
-              "bg-background/95 max-w-4xl rounded-2xl border backdrop-blur-sm lg:px-5 shadow-lg transition-[max-width,background-color,backdrop-filter] duration-150"
+              "max-w-4xl rounded-2xl border backdrop-blur-sm lg:px-5 shadow-lg transition-[max-width,background-color,backdrop-filter] duration-150"
           )}
+          style={{ backgroundColor: '#1b1c1d' }}
         >
           {/* Temporary debug indicator */}
           {/* <div className="absolute top-0 left-0 bg-red-500 text-white px-2 py-1 text-xs z-10">

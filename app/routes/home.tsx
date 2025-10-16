@@ -3,16 +3,14 @@ import Integrations from "~/components/homepage/integrations";
 import { api } from "../../convex/_generated/api";
 import type { Route } from "./+types/home";
 import { Suspense, lazy } from 'react';
-import { ContentSkeleton } from '~/components/ui/skeleton';
 
 // Lazy load components below the fold
-const ContentSection = lazy(() => import("~/components/homepage/content"));
 const Footer = lazy(() => import("~/components/homepage/footer"));
 
 export function meta({}: Route.MetaArgs) {
   const title = "Tajweed Quiz - Master Your Quran Recitation";
   const description =
-    "Learn and practice Tajweed rules with interactive quizzes. Perfect your Quran recitation through focused, rule-specific practice sessions.";
+    "Learn and practice Tajweed rules with interactive quizzes.";
   const keywords = "Tajweed, Quran, Recitation, Islamic Learning, Arabic, Prayer, Tilawah";
   const siteUrl = "https://www.tajweed-quiz.com/";
   const imageUrl = "/tajweed-logo.svg";
@@ -102,9 +100,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <Integrations loaderData={loaderData} />
-      <Suspense fallback={<ContentSkeleton />}>
-        <ContentSection />
-      </Suspense>
       <Suspense fallback={<div className="h-32 bg-muted" />}>
         <Footer />
       </Suspense>

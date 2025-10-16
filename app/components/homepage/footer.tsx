@@ -27,7 +27,7 @@ export default function FooterSection() {
         </div>
 
         {/* Social Links */}
-        <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
+        {/* <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
             to="https://x.com/_7obaid_/"
             target="_blank"
@@ -48,7 +48,7 @@ export default function FooterSection() {
               ></path>
             </svg>
           </Link>
-        </div>
+        </div> */}
 
         {/* Copyright */}
         <span className="text-muted-foreground block text-center text-sm">
