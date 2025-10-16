@@ -102,9 +102,9 @@ const getEnvVar = (key: string): string | undefined => {
 
 export const config: AppConfig = {
   features: {
-    auth: false,        // Enable/disable Authentication
+    auth: true,         // Enable/disable Authentication
     payments: true,    // Enable/disable Billing
-    convex: false,      // Enable/disable Convex
+    convex: true,       // Enable/disable Convex
     email: false,      // Enable/disable Email
     monitoring: false,  // Enable/disable Monitoring
   },
@@ -114,7 +114,7 @@ export const config: AppConfig = {
       mode: "b2c",
     },
     clerk: {
-      enabled: false,
+      enabled: true,
       publishableKey: getEnvVar('VITE_CLERK_PUBLISHABLE_KEY'),
       secretKey: getEnvVar('CLERK_SECRET_KEY'),
     },
@@ -157,7 +157,7 @@ export const config: AppConfig = {
     },
   },
   ui: {
-    showAuth: false,      // Show sign-in/sign-up routes
+    showAuth: true,       // Show sign-in/sign-up routes
     showPricing: true,    // Show pricing page and components
     showDashboard: true,  // Show dashboard routes
     showChat: true,       // Show AI chat functionality

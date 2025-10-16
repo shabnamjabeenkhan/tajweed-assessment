@@ -4,8 +4,9 @@ import { SiteHeader } from "~/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import type { Route } from "./+types/layout";
 import { Outlet } from "react-router";
-import { isFeatureEnabled, isServiceEnabled } from "../../../config";
+import { isFeatureEnabled, isServiceEnabled, getServiceConfig } from "../../../config";
 import { UserSync } from "~/components/dashboard/user-sync";
+import { useEffect, useState } from "react";
 
 export async function loader(args: Route.LoaderArgs) {
   const authEnabled = isFeatureEnabled("auth") && isServiceEnabled("clerk");
@@ -29,9 +30,13 @@ export async function loader(args: Route.LoaderArgs) {
     }
 
     // Fetch user details (required for sidebar)
+    const clerkConfig = getServiceConfig('clerk');
+    if (!clerkConfig?.secretKey) {
+      throw new Error('CLERK_SECRET_KEY is required when auth is enabled');
+    }
+
     user = await createClerkClient({
-      // Secret key is guaranteed to exist if auth is enabled
-      secretKey: process.env.CLERK_SECRET_KEY as string,
+      secretKey: clerkConfig.secretKey,
     }).users.getUser(userId);
   }
 
@@ -42,6 +47,11 @@ export async function loader(args: Route.LoaderArgs) {
 
 export default function DashboardLayout() {
   const { user, authEnabled } = useLoaderData();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <SidebarProvider
@@ -54,7 +64,7 @@ export default function DashboardLayout() {
     >
       <AppSidebar variant="inset" user={user} />
       <SidebarInset>
-        {authEnabled && <UserSync />}
+        {authEnabled && isClient && <UserSync />}
         <SiteHeader />
         <Outlet />
       </SidebarInset>

@@ -10,6 +10,7 @@ import { config, isFeatureEnabled } from "../../../config";
 const getMenuItems = () => {
   const items = [
   { name: "Home", href: "#hero" },
+  { name: "Features", href: "#features" },
   ];
 
   return items;
@@ -136,6 +137,20 @@ export const Navbar = ({
               </button>
             </div>
 
+            <div className="hidden lg:flex flex-1 items-center justify-center">
+              <ul className="flex h-8 items-center gap-8 text-sm leading-none">
+                {menuItems.map((item, index) => (
+                  <li key={index}>
+                    <div
+                      onClick={() => handleNavClick(item.href)}
+                      className="hover:cursor-pointer text-muted-foreground flex items-center h-8 duration-150 transition-colors"
+                    >
+                      <span>{item.name}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
@@ -153,6 +168,10 @@ export const Navbar = ({
                 </ul>
               </div>
               <div className="flex w-full flex-col items-center space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Lock className="w-4 h-4" />
+                  <span className="hidden sm:inline">Private Repo</span>
+                </div>
                 {authEnabled && loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3 self-center">
                     <Button 
