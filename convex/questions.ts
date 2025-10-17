@@ -14,6 +14,9 @@ export const getQuestionsByRule = query({
   },
 });
 
+// Alias for getQuestionsByRule
+export const getByRule = getQuestionsByRule;
+
 // Get a random set of questions for a quiz
 export const getQuizQuestions = query({
   args: {

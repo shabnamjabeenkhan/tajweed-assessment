@@ -24,6 +24,9 @@ export const getRuleBySlug = query({
   },
 });
 
+// Alias for getRuleBySlug
+export const getBySlug = getRuleBySlug;
+
 // Create a new Tajweed rule (admin only)
 export const createRule = mutation({
   args: {

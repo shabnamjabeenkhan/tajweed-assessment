@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation, internalAction } from "./_generated/server";
-import { api } from "./_generated/api";
 
 // Get user's streaks for all rules
 export const getUserStreaks = query({
@@ -53,8 +52,8 @@ export const updateStreak = internalAction({
     const STREAK_THRESHOLD = 70;
     const isSuccessful = args.scorePercent >= STREAK_THRESHOLD;
 
-    // Get the current streak
-    const existingStreak = await ctx.runQuery(api.streaks.getUserRuleStreak, {
+    // Get the current streak directly
+    const existingStreak = await ctx.runQuery("streaks:getUserRuleStreak" as any, {
       userId: args.userId,
       ruleId: args.ruleId,
     });
@@ -66,7 +65,7 @@ export const updateStreak = internalAction({
         const newCurrentLength = existingStreak.currentLength + 1;
         const newLongestLength = Math.max(existingStreak.longestLength, newCurrentLength);
 
-        await ctx.runMutation(api.streaks.updateExistingStreak, {
+        await ctx.runMutation("streaks:updateExistingStreak" as any, {
           streakId: existingStreak._id,
           currentLength: newCurrentLength,
           longestLength: newLongestLength,
@@ -74,7 +73,7 @@ export const updateStreak = internalAction({
         });
       } else {
         // Break the streak
-        await ctx.runMutation(api.streaks.updateExistingStreak, {
+        await ctx.runMutation("streaks:updateExistingStreak" as any, {
           streakId: existingStreak._id,
           currentLength: 0,
           longestLength: existingStreak.longestLength, // Keep the longest
@@ -83,7 +82,7 @@ export const updateStreak = internalAction({
       }
     } else {
       // Create new streak
-      await ctx.runMutation(api.streaks.createNewStreak, {
+      await ctx.runMutation("streaks:createNewStreak" as any, {
         userId: args.userId,
         ruleId: args.ruleId,
         currentLength: isSuccessful ? 1 : 0,

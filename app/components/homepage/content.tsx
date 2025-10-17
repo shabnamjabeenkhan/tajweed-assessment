@@ -19,12 +19,12 @@ const features = [
 
 export default function ContentSection() {
   return (
-    <section className="relative py-14" style={{ backgroundColor: '#1b1c1d' }}>
+    <section className="relative py-14">
       <div className="mx-auto max-w-screen-xl px-4 md:px-8">
         <div className="relative mx-auto max-w-2xl sm:text-center">
           <div className="relative z-10">
             <h3 className="font-geist mt-4 text-3xl font-normal tracking-tighter sm:text-4xl md:text-5xl text-white">
-              Master Tajweed Rules Effectivelyremov
+              Master Tajweed Rules Effectively
             </h3>
         
           </div>

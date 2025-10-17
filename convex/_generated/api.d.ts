@@ -9,13 +9,15 @@
  */
 
 import type * as http from "../http.js";
-import type * as migrations from "../migrations.js";
+import type * as migrations_001_seed_tajweed_rules from "../migrations/001_seed_tajweed_rules.js";
+import type * as migrations_002_seed_questions from "../migrations/002_seed_questions.js";
 import type * as questions from "../questions.js";
 import type * as quizAttempts from "../quizAttempts.js";
 import type * as sendEmails from "../sendEmails.js";
 import type * as streaks from "../streaks.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as tajweedRules from "../tajweedRules.js";
+import type * as testUser from "../testUser.js";
 import type * as users from "../users.js";
 
 import type {
@@ -34,13 +36,15 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
-  migrations: typeof migrations;
+  "migrations/001_seed_tajweed_rules": typeof migrations_001_seed_tajweed_rules;
+  "migrations/002_seed_questions": typeof migrations_002_seed_questions;
   questions: typeof questions;
   quizAttempts: typeof quizAttempts;
   sendEmails: typeof sendEmails;
   streaks: typeof streaks;
   subscriptions: typeof subscriptions;
   tajweedRules: typeof tajweedRules;
+  testUser: typeof testUser;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

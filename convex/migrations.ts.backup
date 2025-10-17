@@ -1,25 +1,20 @@
 import { Migrations } from "@convex-dev/migrations";
-import { components, internal } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 
 // Initialize migrations helper with typed DataModel
-// Cast to any to avoid typegen timing issues before `bunx convex dev` updates types
-const componentsAny = components as any;
-const internalAny = internal as any;
-export const migrations = new Migrations<DataModel>(componentsAny.migrations);
+export const migrations = new Migrations<DataModel>((null as any).migrations);
 
 // Generic runner that accepts { fn?: string; next?: string[]; dryRun?: boolean; cursor?: string | null; batchSize?: number }
 export const run = migrations.runner();
 
 // Convenience: run a single migration by name from dashboard/CLI
-// Example CLI: npx convex run migrations:runIt '{ fn: "migrations:setDefaultUserName", dryRun: true }'
-export const runIt = migrations.runner(internalAny.migrations.setDefaultUserName);
+export const runIt = migrations.runner((null as any).migrations.setDefaultUserName);
 
 // Run a series of migrations, edit list as you add more
 export const runAll = migrations.runner([
-  internalAny.migrations.setDefaultUserName,
-  internalAny.migrations.setDefaultCancelAtPeriodEnd,
-  internalAny.migrations.ensureWebhookProcessedFlag,
+  (null as any).migrations.setDefaultUserName,
+  (null as any).migrations.setDefaultCancelAtPeriodEnd,
+  (null as any).migrations.ensureWebhookProcessedFlag,
 ]);
 
 // Example migrations below — safe and illustrative patterns.

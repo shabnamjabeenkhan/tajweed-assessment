@@ -3,6 +3,8 @@ import type { Route } from "./+types/quiz.$ruleSlug";
 import { validateQuizAnswers } from "~/lib/quiz";
 import { QuizContainer, type QuizAnswer } from "~/components/quiz/QuizContainer";
 import { QuizErrorBoundary } from "~/components/quiz/QuizErrorBoundary";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../convex/_generated/api";
 
 export async function loader(args: Route.LoaderArgs) {
   const { ruleSlug } = args.params;
@@ -11,63 +13,37 @@ export async function loader(args: Route.LoaderArgs) {
     throw new Error("Rule slug is required");
   }
 
-  // Mock data for testing - replace with Convex calls later
-  const mockRules: Record<string, any> = {
-    madd: {
-      _id: "mock-madd-id",
-      slug: "madd",
-      title: "Madd Rules",
-      description: "Rules for prolonging vowel sounds in Quranic recitation",
-      isActive: true,
-      createdAt: Date.now(),
-    },
-    saakin: {
-      _id: "mock-saakin-id",
-      slug: "saakin",
-      title: "Saakin Rules",
-      description: "Rules for letters with sukoon (no vowel mark)",
-      isActive: true,
-      createdAt: Date.now(),
+  try {
+    const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
+    if (!convexUrl) {
+      throw new Error("VITE_CONVEX_URL environment variable is required");
     }
-  };
+    const convexClient = new ConvexHttpClient(convexUrl);
 
-  const mockQuestions = [
-    {
-      _id: "q1",
-      ruleId: `mock-${ruleSlug}-id`,
-      prompt: `What is the basic rule for ${ruleSlug} in Tajweed?`,
-      options: ["Option A", "Option B", "Option C", "Option D"],
-      correctOptionIndex: 1,
-      explanation: `This is the explanation for ${ruleSlug} rules.`,
-      isActive: true,
-      version: 1,
-      createdAt: Date.now(),
-    },
-    {
-      _id: "q2",
-      ruleId: `mock-${ruleSlug}-id`,
-      prompt: `How should ${ruleSlug} be applied when reciting?`,
-      options: ["Method 1", "Method 2", "Method 3", "Method 4"],
-      correctOptionIndex: 0,
-      explanation: `This explains the application of ${ruleSlug}.`,
-      isActive: true,
-      version: 1,
-      createdAt: Date.now(),
-    },
-  ];
+    // Get the rule by slug
+    const rule = await convexClient.query(api.tajweedRules.getBySlug, { slug: ruleSlug });
 
-  const rule = mockRules[ruleSlug];
+    if (!rule) {
+      throw new Response("Rule not found", { status: 404 });
+    }
 
-  if (!rule) {
-    throw new Response("Rule not found", { status: 404 });
+    // Get questions for this rule
+    const questions = await convexClient.query(api.questions.getByRule, { ruleId: rule._id });
+
+    if (questions.length === 0) {
+      throw new Response("No questions found for this rule", { status: 404 });
+    }
+
+    return {
+      rule,
+      questions,
+      userId: "mock-user-id", // TODO: Replace with real user ID from auth
+      authEnabled: true,
+    };
+  } catch (error) {
+    console.error("Error loading quiz data:", error);
+    throw new Response("Failed to load quiz", { status: 500 });
   }
-
-  return {
-    rule,
-    questions: mockQuestions,
-    userId: "mock-user-id",
-    authEnabled: true,
-  };
 }
 
 export async function action(args: Route.ActionArgs) {
@@ -82,21 +58,41 @@ export async function action(args: Route.ActionArgs) {
   try {
     const answers = JSON.parse(answersJson) as QuizAnswer[];
 
-    console.log("Quiz submission received:", {
-      ruleSlug,
-      answersCount: answers.length,
-      answers: answers.map(a => ({
-        questionId: a.questionId,
-        selected: a.selectedOptionIndex,
-        skipped: a.skipped
-      }))
+    // Setup Convex client
+    const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
+    if (!convexUrl) {
+      throw new Error("VITE_CONVEX_URL environment variable is required");
+    }
+    const convexClient = new ConvexHttpClient(convexUrl);
+
+    // Get the rule by slug
+    const rule = await convexClient.query(api.tajweedRules.getBySlug, { slug: ruleSlug });
+    if (!rule) {
+      throw new Error("Rule not found");
+    }
+
+    // Get questions to calculate score
+    const questions = await convexClient.query(api.questions.getByRule, { ruleId: rule._id });
+
+    // Use the test user we created for MVP
+    const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any; // Real user ID from database
+
+    // Format answers for Convex function
+    const formattedAnswers = answers.map(answer => ({
+      questionId: answer.questionId as any,
+      selectedOptionIndex: answer.skipped ? undefined : answer.selectedOptionIndex,
+      skipped: answer.skipped
+    }));
+
+    // Save quiz attempt (this handles scoring and saving answers automatically)
+    await convexClient.mutation(api.quizAttempts.createQuizAttempt, {
+      userId: testUserId,
+      ruleId: rule._id,
+      answers: formattedAnswers
     });
 
-    // Simulate submission delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Redirect back to dashboard with success message
-    return redirect("/dashboard?quiz=completed&rule=" + ruleSlug);
+    // Redirect to dashboard with success message
+    return redirect(`/dashboard?quiz_completed=true&score=${Math.round((formattedAnswers.filter(a => !a.skipped).length / questions.length) * 100)}`);
   } catch (error) {
     console.error("Quiz submission error:", error);
     throw new Error("Failed to submit quiz");
