@@ -54,20 +54,25 @@ export default function DashboardLayout() {
   }, []);
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" user={user} />
-      <SidebarInset>
-        {authEnabled && isClient && <UserSync />}
-        <SiteHeader />
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
+    <div className="min-h-screen bg-gray-950">
+      <SidebarProvider
+        className="min-h-screen bg-gray-950"
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" user={user} />
+        <SidebarInset className="bg-gray-950">
+          {authEnabled && isClient && <UserSync />}
+          <SiteHeader />
+          <div className="bg-gray-950">
+            <Outlet />
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </div>
   );
 }
