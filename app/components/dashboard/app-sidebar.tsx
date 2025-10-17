@@ -80,31 +80,31 @@ export function AppSidebar({
   user: any;
 }) {
   return (
-    <Sidebar collapsible="offcanvas" variant={variant} className="border-r border-gray-800 bg-gray-900">
-      <SidebarHeader className="border-b border-gray-800 p-4 bg-gray-900">
+    <Sidebar collapsible="offcanvas" variant={variant} style={{ backgroundColor: '#1a1a1a' }} className="border-r border-neutral-700/50">
+      <SidebarHeader className="border-b border-neutral-700/50 p-4" style={{ backgroundColor: '#1a1a1a' }}>
         <SidebarMenu>
           <SidebarMenuItem>
             <Link to="/" prefetch="viewport" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <BrandIcon className="size-8 text-white" />
               <div className="flex flex-col">
                 <span className="text-lg font-bold text-white">Tajweed Master</span>
-                <span className="text-xs text-gray-400">Assessment Platform</span>
+                <span className="text-xs text-neutral-400">Assessment Platform</span>
               </div>
             </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="p-4 space-y-6 bg-gray-900">
+      <SidebarContent className="p-4 space-y-6" style={{ backgroundColor: '#1a1a1a' }}>
         {/* Main Navigation */}
         <div>
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Navigation</h3>
+          <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3">Navigation</h3>
           <div className="space-y-1">
             {data.navMain.map((item) => (
               <Link
                 key={item.title}
                 to={item.url}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-neutral-300 hover:bg-neutral-800/60 hover:text-white transition-colors"
               >
                 <item.icon className="size-4" />
                 {item.title}
@@ -115,13 +115,13 @@ export function AppSidebar({
 
         {/* Tajweed Rules Section */}
         <div>
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Tajweed Rules</h3>
+          <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3">Tajweed Rules</h3>
           <div className="space-y-2">
             {data.tajweedRules.map((rule) => (
               <Link
                 key={rule.title}
                 to={rule.url}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors group"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-neutral-300 hover:bg-neutral-800/60 hover:text-white transition-colors group"
               >
                 <WorkspaceIcon intent={rule.intent} />
                 <span className="flex-1">{rule.title}</span>
@@ -132,19 +132,19 @@ export function AppSidebar({
         </div>
 
         {/* Quick Stats */}
-        <div className="bg-gray-800/50 rounded-lg p-4 space-y-2">
+        <div className="bg-neutral-800/30 rounded-lg p-4 space-y-2">
           <h4 className="text-sm font-semibold text-white">Progress Overview</h4>
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Quizzes Completed</span>
+              <span className="text-neutral-400">Quizzes Completed</span>
               <span className="font-medium text-white">12</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Average Score</span>
+              <span className="text-neutral-400">Average Score</span>
               <span className="font-medium text-green-400">85%</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Current Streak</span>
+              <span className="text-neutral-400">Current Streak</span>
               <span className="font-medium text-orange-400">5 days</span>
             </div>
           </div>
@@ -152,12 +152,12 @@ export function AppSidebar({
 
         {/* Help Section */}
         <div className="mt-auto space-y-1">
-          <Separator className="my-4 bg-gray-800" />
+          <Separator className="my-4 bg-neutral-700/50" />
           {data.navSecondary.map((item) => (
             <Link
               key={item.title}
               to={item.url}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800/60 hover:text-white transition-colors"
             >
               <item.icon className="size-4" />
               {item.title}
@@ -166,7 +166,7 @@ export function AppSidebar({
         </div>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900">
+      <SidebarFooter className="border-t border-neutral-700/50 p-4" style={{ backgroundColor: '#1a1a1a' }}>
         {user && <NavUser user={user} />}
       </SidebarFooter>
     </Sidebar>

@@ -46,39 +46,39 @@
 }
 
 :root {
-    /* Apple Light Theme Colors */
-    --background: #030712;
+    /* More black/charcoal colors to match the reference */
+    --background: #0a0a0a;
     --foreground: #ffffff;
-    --card: #111827;
+    --card: #1a1a1a;
     --card-foreground: #ffffff;
-    --popover: #111827;
+    --popover: #1a1a1a;
     --popover-foreground: #ffffff;
-    --primary: #0071e3; /* Apple Blue */
+    --primary: #3b82f6;
     --primary-foreground: #ffffff;
-    --secondary: #1f2937; /* Dark Gray */
-    --secondary-foreground: #e5e7eb;
-    --muted: #1f2937;
-    --muted-foreground: #9ca3af;
-    --accent: #0071e3; /* Apple Blue */
+    --secondary: #262626;
+    --secondary-foreground: #e5e5e5;
+    --muted: #262626;
+    --muted-foreground: #a3a3a3;
+    --accent: #3b82f6;
     --accent-foreground: #ffffff;
-    --destructive: #ff3b30; /* Apple Red */
+    --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: #374151; /* Dark border */
-    --input: #1f2937;
-    --ring: #0071e3;
-    --chart-1: #0071e3; /* Apple Blue */
-    --chart-2: #34c759; /* Apple Green */
-    --chart-3: #ff9500; /* Apple Orange */
-    --chart-4: #ffcc00; /* Apple Yellow */
-    --chart-5: #af52de; /* Apple Purple */
-    --sidebar: #111827;
+    --border: #404040;
+    --input: #262626;
+    --ring: #3b82f6;
+    --chart-1: #3b82f6;
+    --chart-2: #10b981;
+    --chart-3: #f59e0b;
+    --chart-4: #fbbf24;
+    --chart-5: #8b5cf6;
+    --sidebar: #1a1a1a;
     --sidebar-foreground: #ffffff;
-    --sidebar-primary: #0071e3;
+    --sidebar-primary: #3b82f6;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #1f2937;
+    --sidebar-accent: #262626;
     --sidebar-accent-foreground: #ffffff;
-    --sidebar-border: #374151;
-    --sidebar-ring: #0071e3;
+    --sidebar-border: #404040;
+    --sidebar-ring: #3b82f6;
     /* Apple Fonts */
     --font-apple-system:
         -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue",
@@ -108,7 +108,9 @@
     
     /* Only target html and body for padding removal */
     html, body {
-        @apply bg-gray-950 text-foreground font-sans;
+        @apply font-sans;
+        background-color: #0a0a0a;
+        color: #ffffff;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         margin: 0;
