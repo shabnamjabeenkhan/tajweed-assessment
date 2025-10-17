@@ -42,13 +42,18 @@ export const upsertUser = mutation({
 
     if (existingUser) {
       // Update if needed
+      // Check if we need to update (handle both old and new users)
+      const currentName = existingUser.displayName || existingUser.name;
       if (
-        existingUser.name !== identity.name ||
-        existingUser.email !== identity.email
+        currentName !== identity.name ||
+        existingUser.email !== identity.email ||
+        !existingUser.clerkId
       ) {
         await ctx.db.patch(existingUser._id, {
-          name: identity.name,
+          clerkId: existingUser.clerkId || identity.subject,
+          displayName: identity.name,
           email: identity.email,
+          updatedAt: Date.now(),
         });
       }
       return existingUser;
@@ -56,9 +61,12 @@ export const upsertUser = mutation({
 
     // Create new user
     const userId = await ctx.db.insert("users", {
-      name: identity.name,
+      clerkId: identity.subject,
+      displayName: identity.name,
       email: identity.email,
       tokenIdentifier: identity.subject,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
     });
 
     // Schedule welcome email; internal function handles config gating

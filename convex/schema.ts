@@ -3,11 +3,76 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
-    name: v.optional(v.string()),
+    clerkId: v.optional(v.string()), // Made optional for backward compatibility
     email: v.optional(v.string()),
+    displayName: v.optional(v.string()),
+    name: v.optional(v.string()), // Keep old field for backward compatibility
     image: v.optional(v.string()),
     tokenIdentifier: v.string(),
-  }).index("by_token", ["tokenIdentifier"]),
+    createdAt: v.optional(v.number()), // Made optional for backward compatibility
+    updatedAt: v.optional(v.number()), // Made optional for backward compatibility
+  })
+    .index("by_token", ["tokenIdentifier"])
+    .index("by_clerk_id", ["clerkId"])
+    .index("by_email", ["email"]),
+
+  // Tajweed Quiz Tables
+  tajweedRules: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    description: v.string(),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_active", ["isActive"]),
+
+  questions: defineTable({
+    ruleId: v.id("tajweedRules"),
+    prompt: v.string(),
+    options: v.array(v.string()),
+    correctOptionIndex: v.number(),
+    explanation: v.string(),
+    isActive: v.boolean(),
+    version: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_rule", ["ruleId"])
+    .index("by_rule_active", ["ruleId", "isActive"]),
+
+  quizAttempts: defineTable({
+    userId: v.id("users"),
+    ruleId: v.id("tajweedRules"),
+    scorePercent: v.number(),
+    correctCount: v.number(),
+    totalCount: v.number(),
+    completedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_rule", ["userId", "ruleId"])
+    .index("by_user_completed", ["userId", "completedAt"]),
+
+  attemptAnswers: defineTable({
+    attemptId: v.id("quizAttempts"),
+    questionId: v.id("questions"),
+    selectedOptionIndex: v.optional(v.number()),
+    isCorrect: v.boolean(),
+    skipped: v.boolean(),
+  })
+    .index("by_attempt", ["attemptId"])
+    .index("by_question", ["questionId"]),
+
+  streaks: defineTable({
+    userId: v.id("users"),
+    ruleId: v.id("tajweedRules"),
+    currentLength: v.number(),
+    longestLength: v.number(),
+    lastAttemptId: v.optional(v.id("quizAttempts")),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_rule", ["userId", "ruleId"]),
+
   subscriptions: defineTable({
     userId: v.optional(v.string()),
     polarId: v.optional(v.string()),

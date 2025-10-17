@@ -10,8 +10,12 @@
 
 import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
+import type * as questions from "../questions.js";
+import type * as quizAttempts from "../quizAttempts.js";
 import type * as sendEmails from "../sendEmails.js";
+import type * as streaks from "../streaks.js";
 import type * as subscriptions from "../subscriptions.js";
+import type * as tajweedRules from "../tajweedRules.js";
 import type * as users from "../users.js";
 
 import type {
@@ -31,8 +35,12 @@ import type {
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   migrations: typeof migrations;
+  questions: typeof questions;
+  quizAttempts: typeof quizAttempts;
   sendEmails: typeof sendEmails;
+  streaks: typeof streaks;
   subscriptions: typeof subscriptions;
+  tajweedRules: typeof tajweedRules;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

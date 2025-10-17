@@ -25,7 +25,10 @@ const routes: RouteConfig = [
   route("privacy", "routes/privacy.tsx"),
   route("terms", "routes/terms.tsx"),
   route("refund", "routes/refund.tsx"),
-  
+
+  // Quiz routes
+  route("quiz/:ruleSlug", "routes/quiz.$ruleSlug.tsx"),
+
   // Dashboard routes (always included)
   layout("routes/dashboard/layout.tsx", [
     route("dashboard", "routes/dashboard/index.tsx"),
