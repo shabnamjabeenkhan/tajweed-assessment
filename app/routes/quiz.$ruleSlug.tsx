@@ -85,14 +85,21 @@ export async function action(args: Route.ActionArgs) {
     }));
 
     // Save quiz attempt (this handles scoring and saving answers automatically)
-    await convexClient.mutation(api.quizAttempts.createQuizAttempt, {
+    const attemptId = await convexClient.mutation(api.quizAttempts.createQuizAttempt, {
       userId: testUserId,
       ruleId: rule._id,
       answers: formattedAnswers
     });
 
-    // Redirect to dashboard with success message
-    return redirect(`/dashboard?quiz_completed=true&score=${Math.round((formattedAnswers.filter(a => !a.skipped).length / questions.length) * 100)}`);
+    // Get the actual score from the created attempt
+    const attemptDetails = await convexClient.query(api.quizAttempts.getAttemptDetails, {
+      attemptId: attemptId
+    });
+
+    const actualScore = attemptDetails?.scorePercent || 0;
+
+    // Redirect to dashboard with success message and attempt ID
+    return redirect(`/dashboard?quiz_completed=true&score=${actualScore}&attempt_id=${attemptId}`);
   } catch (error) {
     console.error("Quiz submission error:", error);
     throw new Error("Failed to submit quiz");

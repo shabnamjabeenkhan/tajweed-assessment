@@ -26,9 +26,35 @@ export async function loader(args: LoaderArgs) {
     }
     const convexClient = new ConvexHttpClient(convexUrl);
 
+    let actualAttemptId = attemptId;
+
+    // Handle "latest" case by fetching user's most recent attempt
+    if (attemptId === "latest") {
+      // Use the test user ID for MVP
+      const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
+
+      // Get user's most recent attempt
+      const userHistory = await convexClient.query(api.quizAttempts.getUserQuizHistory, {
+        userId: testUserId,
+        limit: 1
+      });
+
+      if (!userHistory || userHistory.attempts.length === 0) {
+        throw new Response("No quiz attempts found", { status: 404 });
+      }
+
+      actualAttemptId = userHistory.attempts[0]._id;
+      console.log("Retrieved latest attempt ID:", actualAttemptId);
+    }
+
+    // Validate that we have a proper ID
+    if (!actualAttemptId || actualAttemptId === "latest") {
+      throw new Response("Invalid attempt ID", { status: 400 });
+    }
+
     // Get attempt details with all related data
     const attemptDetails = await convexClient.query(api.quizAttempts.getAttemptDetails, {
-      attemptId: attemptId as any
+      attemptId: actualAttemptId as any
     });
 
     if (!attemptDetails) {

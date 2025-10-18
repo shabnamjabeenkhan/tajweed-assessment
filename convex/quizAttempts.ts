@@ -57,6 +57,68 @@ export const getUserRuleAttempts = query({
   },
 });
 
+// Get dashboard statistics for a user
+export const getDashboardStats = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    // Get all user attempts
+    const attempts = await ctx.db
+      .query("quizAttempts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    if (attempts.length === 0) {
+      return {
+        quizzesCompleted: 0,
+        averageScore: 0,
+        currentStreak: 0,
+        badgesEarned: 0,
+        weeklyProgress: 0,
+        scoreImprovement: 0,
+      };
+    }
+
+    // Calculate stats
+    const quizzesCompleted = attempts.length;
+    const totalScore = attempts.reduce((sum, attempt) => sum + attempt.scorePercent, 0);
+    const averageScore = Math.round(totalScore / attempts.length);
+
+    // Calculate weekly progress (attempts in last 7 days)
+    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const weeklyAttempts = attempts.filter(attempt => attempt.completedAt > oneWeekAgo);
+    const weeklyProgress = weeklyAttempts.length;
+
+    // Calculate score improvement (compare first half vs second half of attempts)
+    const midpoint = Math.floor(attempts.length / 2);
+    const firstHalfAvg = midpoint > 0 ?
+      Math.round(attempts.slice(0, midpoint).reduce((sum, a) => sum + a.scorePercent, 0) / midpoint) : 0;
+    const secondHalfAvg = attempts.length - midpoint > 0 ?
+      Math.round(attempts.slice(midpoint).reduce((sum, a) => sum + a.scorePercent, 0) / (attempts.length - midpoint)) : 0;
+    const scoreImprovement = secondHalfAvg - firstHalfAvg;
+
+    // Get current streak (this would need to be calculated from actual streak data)
+    const streaks = await ctx.db
+      .query("streaks")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const currentStreak = streaks.reduce((max, streak) =>
+      Math.max(max, streak.currentLength), 0);
+
+    // Simple badges calculation (could be more sophisticated)
+    const badgesEarned = Math.floor(quizzesCompleted / 2) + (averageScore >= 90 ? 2 : averageScore >= 70 ? 1 : 0);
+
+    return {
+      quizzesCompleted,
+      averageScore,
+      currentStreak,
+      badgesEarned,
+      weeklyProgress,
+      scoreImprovement,
+    };
+  },
+});
+
 // Get quiz attempt details with answers
 export const getAttemptDetails = query({
   args: { attemptId: v.id("quizAttempts") },

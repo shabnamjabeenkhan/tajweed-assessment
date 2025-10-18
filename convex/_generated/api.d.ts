@@ -10,6 +10,7 @@
 
 import type * as http from "../http.js";
 import type * as migrations_001_seed_tajweed_rules from "../migrations/001_seed_tajweed_rules.js";
+import type * as migrations_002_seed_all_content from "../migrations/002_seed_all_content.js";
 import type * as migrations_002_seed_questions from "../migrations/002_seed_questions.js";
 import type * as questions from "../questions.js";
 import type * as quizAttempts from "../quizAttempts.js";
@@ -37,6 +38,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   http: typeof http;
   "migrations/001_seed_tajweed_rules": typeof migrations_001_seed_tajweed_rules;
+  "migrations/002_seed_all_content": typeof migrations_002_seed_all_content;
   "migrations/002_seed_questions": typeof migrations_002_seed_questions;
   questions: typeof questions;
   quizAttempts: typeof quizAttempts;

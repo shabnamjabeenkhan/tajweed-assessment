@@ -43,20 +43,23 @@ export function QuizContainer({ rule, questions, userId, onSubmit }: QuizContain
   };
 
   const handleSkip = () => {
+    // Mark current question as skipped
     setAnswers(prev => prev.map((answer, index) =>
       index === currentQuestionIndex
         ? { ...answer, selectedOptionIndex: undefined, skipped: true }
         : answer
     ));
+
+    // Automatically advance to next question or submit if last question
+    setTimeout(() => {
+      if (isLastQuestion) {
+        handleNext();
+      } else {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }
+    }, 100); // Small delay to ensure state update completes
   };
 
-  const handleIDontKnow = () => {
-    setAnswers(prev => prev.map((answer, index) =>
-      index === currentQuestionIndex
-        ? { ...answer, selectedOptionIndex: undefined, skipped: true }
-        : answer
-    ));
-  };
 
   const handleNext = async () => {
     if (isLastQuestion) {
@@ -180,13 +183,6 @@ export function QuizContainer({ rule, questions, userId, onSubmit }: QuizContain
               className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Skip
-            </button>
-            <button
-              onClick={handleIDontKnow}
-              disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              I Don't Know
             </button>
           </div>
 
