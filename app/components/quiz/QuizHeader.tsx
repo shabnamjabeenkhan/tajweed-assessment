@@ -32,9 +32,11 @@ export function QuizHeader({ rule, currentQuestion, totalQuestions, onExit }: Qu
 
         <button
           onClick={onExit}
-          className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white transition-colors text-sm"
+          className="px-6 py-2 rounded-lg bg-neutral-800 border border-neutral-600 text-white hover:bg-neutral-700 hover:border-neutral-500 transition-all duration-200 text-sm font-medium"
         >
-          Exit Quiz
+          Exit
+          <br />
+          Quiz
         </button>
       </div>
 

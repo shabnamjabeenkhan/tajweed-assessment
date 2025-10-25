@@ -1,4 +1,4 @@
-import { Home, BookOpen, BarChart3, HelpCircle, Settings, Star, Award } from "lucide-react";
+import { Home, BookOpen, BarChart3, Settings, Star } from "lucide-react";
 import { Link } from "react-router";
 import { BrandIcon } from "./brand-icon";
 import { WorkspaceIcon } from "./workspace-icon";
@@ -30,11 +30,6 @@ const data = {
       url: "/results",
       icon: BarChart3,
     },
-    {
-      title: "Leaderboard",
-      url: "/leaderboard",
-      icon: Award,
-    },
   ],
   tajweedRules: [
     {
@@ -59,11 +54,6 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: "Help & Guide",
-      url: "/dashboard/help",
-      icon: HelpCircle,
-    },
     {
       title: "Settings",
       url: "/dashboard/settings",
@@ -95,7 +85,7 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="p-4 space-y-6" style={{ backgroundColor: '#1a1a1a' }}>
+      <SidebarContent className="p-4 space-y-4" style={{ backgroundColor: '#1a1a1a' }}>
         {/* Main Navigation */}
         <div>
           <h3 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3">Navigation</h3>
@@ -132,7 +122,7 @@ export function AppSidebar({
         </div>
 
         {/* Quick Stats */}
-        <div className="bg-neutral-800/30 rounded-lg p-4 space-y-2">
+        <div className="bg-neutral-800/30 rounded-lg p-3 space-y-2">
           <h4 className="text-sm font-semibold text-white">Progress Overview</h4>
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
@@ -143,16 +133,12 @@ export function AppSidebar({
               <span className="text-neutral-400">Average Score</span>
               <span className="font-medium text-green-400">85%</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-neutral-400">Current Streak</span>
-              <span className="font-medium text-orange-400">5 days</span>
-            </div>
           </div>
         </div>
 
         {/* Help Section */}
         <div className="mt-auto space-y-1">
-          <Separator className="my-4 bg-neutral-700/50" />
+          <Separator className="my-2 bg-neutral-700/50" />
           {data.navSecondary.map((item) => (
             <Link
               key={item.title}

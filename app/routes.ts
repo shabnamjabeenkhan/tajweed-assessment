@@ -27,7 +27,9 @@ const routes: RouteConfig = [
   route("refund", "routes/refund.tsx"),
 
   // Quiz routes
+  route("quiz", "routes/quiz.tsx"),
   route("quiz/:ruleSlug", "routes/quiz.$ruleSlug.tsx"),
+  route("results", "routes/results.tsx"),
   route("results/:attemptId", "routes/results.$attemptId.tsx"),
 
   // Dashboard routes (always included)

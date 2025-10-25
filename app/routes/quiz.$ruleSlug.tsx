@@ -128,7 +128,7 @@ export default function QuizPage() {
 
   return (
     <QuizErrorBoundary>
-      <div className="min-h-screen bg-gray-950 text-white">
+      <div className="min-h-screen text-white" style={{ backgroundColor: '#0a0a0a' }}>
         <div className="container mx-auto px-4 py-8">
           <QuizContainer
             rule={rule}
