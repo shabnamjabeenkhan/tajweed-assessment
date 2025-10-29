@@ -1,6 +1,6 @@
 "use client";
 import { UserButton } from "@clerk/react-router";
-import { Menu, X, Loader2, Lock } from "lucide-react";
+import { Menu, X, Loader2 } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
@@ -10,7 +10,6 @@ import { config, isFeatureEnabled } from "../../../config";
 const getMenuItems = () => {
   const items = [
   { name: "Home", href: "#hero" },
-  { name: "Features", href: "#features" },
   ];
 
   return items;
@@ -168,10 +167,6 @@ export const Navbar = ({
                 </ul>
               </div>
               <div className="flex w-full flex-col items-center space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Lock className="w-4 h-4" />
-                  <span className="hidden sm:inline">Private Repo</span>
-                </div>
                 {authEnabled && loaderData?.isSignedIn ? (
                   <div className="flex items-center gap-3 self-center">
                     <Button 
