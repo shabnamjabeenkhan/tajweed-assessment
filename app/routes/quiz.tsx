@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { BookOpen, PlayCircle, Star, Clock, Target } from "lucide-react";
+import { useQuery } from "convex/react";
 
 export async function loader() {
   try {
@@ -25,6 +26,17 @@ export async function loader() {
 
 export default function QuizLibrary() {
   const { rules } = useLoaderData<typeof loader>();
+
+  // Get quiz completion stats for the current user
+  const completionStats = useQuery(api.quizAttempts.getCurrentUserQuizLibraryStats);
+
+  // Get completed rules for the current user
+  const completedRuleIds = useQuery(api.quizAttempts.getCurrentUserCompletedRules);
+
+  // Helper function to check if a rule is completed
+  const isRuleCompleted = (ruleId: any) => {
+    return completedRuleIds?.includes(ruleId) ?? false;
+  };
 
   const ruleColors = {
     'ith-har': 'blue',
@@ -67,7 +79,7 @@ export default function QuizLibrary() {
                   <div className="flex items-center gap-3">
                     <BookOpen className="h-8 w-8 text-blue-400" />
                     <div>
-                      <p className="text-2xl font-bold text-white">{rules.length}</p>
+                      <p className="text-2xl font-bold text-white">{completionStats?.totalRules ?? rules.length}</p>
                       <p className="text-sm text-neutral-400">Total Rules</p>
                     </div>
                   </div>
@@ -79,7 +91,7 @@ export default function QuizLibrary() {
                   <div className="flex items-center gap-3">
                     <Target className="h-8 w-8 text-green-400" />
                     <div>
-                      <p className="text-2xl font-bold text-white">0</p>
+                      <p className="text-2xl font-bold text-white">{completionStats?.completedRules ?? 0}</p>
                       <p className="text-sm text-neutral-400">Completed</p>
                     </div>
                   </div>
@@ -91,7 +103,7 @@ export default function QuizLibrary() {
                   <div className="flex items-center gap-3">
                     <Clock className="h-8 w-8 text-orange-400" />
                     <div>
-                      <p className="text-2xl font-bold text-white">{rules.length}</p>
+                      <p className="text-2xl font-bold text-white">{completionStats?.availableRules ?? rules.length}</p>
                       <p className="text-sm text-neutral-400">Available</p>
                     </div>
                   </div>
@@ -108,8 +120,12 @@ export default function QuizLibrary() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <span className="text-white">{rule.title}</span>
-                      <Badge variant="outline" className={getColorClasses(rule.slug)}>
-                        New
+                      <Badge variant="outline" className={
+                        isRuleCompleted(rule._id)
+                          ? "text-green-400 border-green-500/20 bg-green-500/10"
+                          : getColorClasses(rule.slug)
+                      }>
+                        {isRuleCompleted(rule._id) ? "Completed" : "New"}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-neutral-400">
@@ -138,10 +154,14 @@ export default function QuizLibrary() {
 
                     <Link
                       to={`/quiz/${rule.slug}`}
-                      className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg transition-all duration-200"
+                      className={`flex items-center justify-center gap-2 w-full px-4 py-2 rounded-lg transition-all duration-200 ${
+                        isRuleCompleted(rule._id)
+                          ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
+                          : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+                      }`}
                     >
                       <PlayCircle className="h-4 w-4" />
-                      Start Quiz
+                      {isRuleCompleted(rule._id) ? "Retake Quiz" : "Start Quiz"}
                     </Link>
                   </CardContent>
                 </Card>

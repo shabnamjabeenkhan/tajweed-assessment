@@ -90,21 +90,21 @@ export default function ResultsPage() {
   const performance = getPerformanceLevel(attempt.scorePercent);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen text-white" style={{ backgroundColor: '#0a0a0a' }}>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Quiz Results</h1>
-          <p className="text-gray-400">{attempt.rule?.title}</p>
+          <p className="text-neutral-400">{attempt.rule?.title}</p>
         </div>
 
         {/* Score Display */}
-        <div className="bg-gray-900 rounded-lg p-8 mb-6 text-center">
+        <div className="rounded-lg p-8 mb-6 text-center border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
           <div className="mb-4">
             <div className={`text-6xl font-bold ${performance.color} mb-2`}>
               {attempt.scorePercent}%
             </div>
-            <div className="text-gray-300 text-lg">
+            <div className="text-neutral-300 text-lg">
               {attempt.correctCount} out of {attempt.totalCount} correct
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function ResultsPage() {
           </div>
 
           {/* Simple progress bar */}
-          <div className="w-full bg-gray-700 rounded-full h-3 mb-6">
+          <div className="w-full bg-neutral-700 rounded-full h-3 mb-6">
             <div
               className={`h-3 rounded-full transition-all duration-1000 ${
                 attempt.scorePercent >= 90 ? 'bg-green-500' :
@@ -127,22 +127,22 @@ export default function ResultsPage() {
         </div>
 
         {/* Question Review */}
-        <div className="bg-gray-900 rounded-lg p-6 mb-6">
+        <div className="rounded-lg p-6 mb-6 border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
           <h2 className="text-2xl font-bold mb-4">Question Review</h2>
           <div className="space-y-4">
             {attempt.answers.map((answer, index) => (
-              <div key={answer._id} className="border border-gray-700 rounded-lg p-4">
+              <div key={answer._id} className="border border-neutral-700/50 rounded-lg p-4" style={{ backgroundColor: '#0f0f0f' }}>
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold text-lg">Question {index + 1}</h3>
                   <span className={`px-2 py-1 rounded text-sm ${
-                    answer.skipped ? 'bg-gray-600 text-gray-300' :
+                    answer.skipped ? 'bg-neutral-600 text-neutral-300' :
                     answer.isCorrect ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'
                   }`}>
                     {answer.skipped ? 'Skipped' : answer.isCorrect ? 'Correct' : 'Incorrect'}
                   </span>
                 </div>
 
-                <p className="text-gray-300 mb-3">{answer.question?.prompt}</p>
+                <p className="text-neutral-300 mb-3">{answer.question?.prompt}</p>
 
                 <div className="space-y-2">
                   {answer.question?.options.map((option, optionIndex) => (
@@ -151,7 +151,7 @@ export default function ResultsPage() {
                       className={`p-2 rounded ${
                         optionIndex === answer.question?.correctOptionIndex ? 'bg-green-900 border border-green-600' :
                         optionIndex === answer.selectedOptionIndex && !answer.isCorrect ? 'bg-red-900 border border-red-600' :
-                        'bg-gray-800'
+                        'bg-neutral-800'
                       }`}
                     >
                       <span className="flex items-center">
@@ -189,7 +189,7 @@ export default function ResultsPage() {
           </a>
           <a
             href="/dashboard"
-            className="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-neutral-600 text-white rounded-lg hover:bg-neutral-700 transition-colors"
           >
             Try Another Rule
           </a>

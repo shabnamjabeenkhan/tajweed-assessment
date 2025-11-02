@@ -154,6 +154,95 @@ export const getAttemptDetails = query({
   },
 });
 
+// Get quiz library completion stats for the current user
+export const getCurrentUserQuizLibraryStats = query({
+  args: {},
+  handler: async (ctx) => {
+    // Get total number of active rules first
+    const allRules = await ctx.db
+      .query("tajweedRules")
+      .withIndex("by_active", (q) => q.eq("isActive", true))
+      .collect();
+
+    const totalRules = allRules.length;
+
+    // Check if user is authenticated
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      // Return stats for unauthenticated users
+      return {
+        totalRules,
+        completedRules: 0,
+        availableRules: totalRules,
+      };
+    }
+
+    // Find the user in our database
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.subject))
+      .unique();
+
+    if (!user) {
+      // User not yet created in our database
+      return {
+        totalRules,
+        completedRules: 0,
+        availableRules: totalRules,
+      };
+    }
+
+    // Get all unique rules that have been completed by the user
+    const attempts = await ctx.db
+      .query("quizAttempts")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    // Get unique rule IDs that have been completed
+    const completedRuleIds = new Set(attempts.map(attempt => attempt.ruleId));
+
+    const completedRules = completedRuleIds.size;
+    const availableRules = totalRules - completedRules;
+
+    return {
+      totalRules,
+      completedRules,
+      availableRules,
+    };
+  },
+});
+
+// Get completed rule IDs for the current user
+export const getCurrentUserCompletedRules = query({
+  args: {},
+  handler: async (ctx) => {
+    // Check if user is authenticated
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return [];
+    }
+
+    // Find the user in our database
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.subject))
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    // Get all attempts for this user
+    const attempts = await ctx.db
+      .query("quizAttempts")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    // Return unique rule IDs
+    return Array.from(new Set(attempts.map(attempt => attempt.ruleId)));
+  },
+});
+
 // Create a new quiz attempt
 export const createQuizAttempt = mutation({
   args: {
