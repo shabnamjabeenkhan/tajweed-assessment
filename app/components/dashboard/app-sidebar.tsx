@@ -33,23 +33,23 @@ const data = {
   ],
   tajweedRules: [
     {
+      title: "Idhaar Rules",
+      url: "/quiz/ith-har",
+      intent: "primary" as const,
+    },
+    {
+      title: "Iqlaab Rules",
+      url: "/quiz/iqlaab",
+      intent: "secondary" as const,
+    },
+    {
       title: "Idgham Rules",
       url: "/quiz/idgham",
-      intent: "primary" as const,
+      intent: "accent" as const,
     },
     {
       title: "Ikhfa Rules",
       url: "/quiz/ikhfa",
-      intent: "secondary" as const,
-    },
-    {
-      title: "Qalqalah Rules",
-      url: "/quiz/qalqalah",
-      intent: "accent" as const,
-    },
-    {
-      title: "Ghunna Rules",
-      url: "/quiz/ghunna",
       intent: "warning" as const,
     },
   ],
@@ -65,10 +65,18 @@ const data = {
 export function AppSidebar({
   variant,
   user,
+  stats,
 }: {
   variant: "sidebar" | "floating" | "inset";
   user: any;
+  stats?: any;
 }) {
+  const defaultStats = {
+    quizzesCompleted: 0,
+    averageScore: 0,
+  };
+
+  const displayStats = stats || defaultStats;
   return (
     <Sidebar collapsible="offcanvas" variant={variant} style={{ backgroundColor: '#1a1a1a' }} className="border-r border-neutral-700/50">
       <SidebarHeader className="border-b border-neutral-700/50 p-4" style={{ backgroundColor: '#1a1a1a' }}>
@@ -127,11 +135,11 @@ export function AppSidebar({
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-neutral-400">Quizzes Completed</span>
-              <span className="font-medium text-white">12</span>
+              <span className="font-medium text-white">{displayStats.quizzesCompleted}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-neutral-400">Average Score</span>
-              <span className="font-medium text-green-400">85%</span>
+              <span className="font-medium text-green-400">{displayStats.averageScore}%</span>
             </div>
           </div>
         </div>

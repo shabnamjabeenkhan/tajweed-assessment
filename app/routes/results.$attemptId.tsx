@@ -1,6 +1,8 @@
 import { useLoaderData } from "react-router";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
+import { useState } from "react";
+import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
 
 // Route types
 type LoaderArgs = {
@@ -78,6 +80,7 @@ export async function loader(args: LoaderArgs) {
 
 export default function ResultsPage() {
   const { attempt } = useLoaderData<typeof loader>();
+  const [expandedQuestions, setExpandedQuestions] = useState<Set<string>>(new Set());
 
   // Calculate performance level
   const getPerformanceLevel = (score: number) => {
@@ -85,6 +88,18 @@ export default function ResultsPage() {
     if (score >= 70) return { level: "good", color: "text-blue-400", message: "Great job! You're on the right track!" };
     if (score >= 50) return { level: "needs-work", color: "text-yellow-400", message: "Good effort! Let's work on a few areas." };
     return { level: "struggling", color: "text-red-400", message: "Every expert was once a beginner!" };
+  };
+
+  const toggleExplanation = (questionId: string) => {
+    setExpandedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
   };
 
   const performance = getPerformanceLevel(attempt.scorePercent);
@@ -96,6 +111,24 @@ export default function ResultsPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Quiz Results</h1>
           <p className="text-neutral-400">{attempt.rule?.title}</p>
+
+          {/* Progress Bar */}
+          <div className="mt-6 max-w-md mx-auto">
+            <div className="flex justify-between text-sm text-neutral-400 mb-2">
+              <span>Progress</span>
+              <span>{attempt.correctCount}/{attempt.totalCount} • {attempt.scorePercent}%</span>
+            </div>
+            <div className="w-full bg-neutral-700 rounded-full h-3">
+              <div
+                className={`h-3 rounded-full transition-all duration-1000 ${
+                  attempt.scorePercent >= 90 ? 'bg-green-500' :
+                  attempt.scorePercent >= 70 ? 'bg-blue-500' :
+                  attempt.scorePercent >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                }`}
+                style={{ width: `${attempt.scorePercent}%` }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Score Display */}
@@ -129,53 +162,125 @@ export default function ResultsPage() {
         {/* Question Review */}
         <div className="rounded-lg p-6 mb-6 border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
           <h2 className="text-2xl font-bold mb-4">Question Review</h2>
-          <div className="space-y-4">
-            {attempt.answers.map((answer, index) => (
-              <div key={answer._id} className="border border-neutral-700/50 rounded-lg p-4" style={{ backgroundColor: '#0f0f0f' }}>
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-lg">Question {index + 1}</h3>
-                  <span className={`px-2 py-1 rounded text-sm ${
-                    answer.skipped ? 'bg-neutral-600 text-neutral-300' :
-                    answer.isCorrect ? 'bg-green-600 text-green-100' : 'bg-red-600 text-red-100'
+          <div className="space-y-8">
+            {attempt.answers.map((answer, index) => {
+              const isCorrect = !answer.skipped && answer.isCorrect;
+              const isExpanded = expandedQuestions.has(answer._id);
+
+              return (
+                <div key={answer._id} className="border border-neutral-700/50 rounded-lg overflow-hidden shadow-lg" style={{ backgroundColor: '#0f0f0f' }}>
+                  {/* Header Section */}
+                  <div className={`p-6 text-center relative overflow-hidden ${
+                    answer.skipped
+                      ? 'bg-gradient-to-br from-neutral-800 to-neutral-900'
+                      : isCorrect
+                        ? 'bg-gradient-to-br from-green-950/30 to-emerald-950/30'
+                        : 'bg-gradient-to-br from-red-950/30 to-rose-950/30'
                   }`}>
-                    {answer.skipped ? 'Skipped' : answer.isCorrect ? 'Correct' : 'Incorrect'}
-                  </span>
-                </div>
-
-                <p className="text-neutral-300 mb-3">{answer.question?.prompt}</p>
-
-                <div className="space-y-2">
-                  {answer.question?.options.map((option, optionIndex) => (
-                    <div
-                      key={optionIndex}
-                      className={`p-2 rounded ${
-                        optionIndex === answer.question?.correctOptionIndex ? 'bg-green-900 border border-green-600' :
-                        optionIndex === answer.selectedOptionIndex && !answer.isCorrect ? 'bg-red-900 border border-red-600' :
-                        'bg-neutral-800'
-                      }`}
-                    >
-                      <span className="flex items-center">
-                        {optionIndex === answer.selectedOptionIndex && (
-                          <span className="mr-2">👆</span>
-                        )}
-                        {optionIndex === answer.question?.correctOptionIndex && (
-                          <span className="mr-2">✅</span>
-                        )}
-                        {option}
-                      </span>
+                    <div className="inline-block mb-4">
+                      {answer.skipped ? (
+                        <div className="w-16 h-16 rounded-full bg-neutral-600 flex items-center justify-center">
+                          <span className="text-2xl text-neutral-300">-</span>
+                        </div>
+                      ) : isCorrect ? (
+                        <CheckCircle className="w-16 h-16 text-green-400" />
+                      ) : (
+                        <XCircle className="w-16 h-16 text-red-400" />
+                      )}
                     </div>
-                  ))}
-                </div>
 
-                {answer.question?.explanation && (
-                  <div className="mt-3 p-3 bg-blue-900 border border-blue-600 rounded">
-                    <p className="text-blue-100">
-                      <strong>Explanation:</strong> {answer.question.explanation}
+                    <h1 className={`text-2xl font-bold mb-2 ${
+                      answer.skipped
+                        ? 'text-neutral-400'
+                        : isCorrect
+                          ? 'text-green-300'
+                          : 'text-red-300'
+                    }`}>
+                      Question {index + 1} - {answer.skipped ? 'Skipped' : isCorrect ? 'Correct!' : 'Incorrect'}
+                    </h1>
+
+                    <p className="text-neutral-400 text-lg">
+                      {answer.skipped
+                        ? "This question was skipped."
+                        : isCorrect
+                          ? "Great job! You got it right."
+                          : "Don't worry, let's learn from this."}
                     </p>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Content Section */}
+                  <div className="p-6 space-y-6">
+                    {/* Question */}
+                    <div className="space-y-2">
+                      <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
+                        Question
+                      </h3>
+                      <p className="text-lg text-white">{answer.question?.prompt}</p>
+                    </div>
+
+                    {/* Answers */}
+                    {!answer.skipped && (
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
+                            Your Answer
+                          </h3>
+                          <div className={`p-4 rounded-lg border-2 ${
+                            isCorrect
+                              ? 'bg-green-950/20 border-green-500'
+                              : 'bg-red-950/20 border-red-500'
+                          }`}>
+                            <p className="text-white font-medium">
+                              {answer.question?.options[answer.selectedOptionIndex || 0]}
+                            </p>
+                          </div>
+                        </div>
+
+                        {!isCorrect && (
+                          <div className="space-y-2">
+                            <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
+                              Correct Answer
+                            </h3>
+                            <div className="p-4 rounded-lg border-2 bg-green-950/20 border-green-500">
+                              <p className="text-white font-medium">
+                                {answer.question?.options[answer.question?.correctOptionIndex || 0]}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Explanation */}
+                    {answer.question?.explanation && (
+                      <div className="space-y-3">
+                        <button
+                          onClick={() => toggleExplanation(answer._id)}
+                          className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors font-medium"
+                        >
+                          <span>
+                            {isExpanded ? "Hide" : "Show"} Explanation
+                          </span>
+                          <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                            <ArrowRight className="w-4 h-4 rotate-90" />
+                          </div>
+                        </button>
+
+                        {isExpanded && (
+                          <div className="overflow-hidden">
+                            <div className="p-4 rounded-lg bg-blue-950/20 border border-blue-600">
+                              <p className="text-blue-100 leading-relaxed">
+                                <strong>Explanation:</strong> {answer.question.explanation}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

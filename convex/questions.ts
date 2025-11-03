@@ -31,9 +31,16 @@ export const getQuizQuestions = query({
       )
       .collect();
 
-    // Shuffle and limit to specified number (default 10)
-    const shuffled = questions.sort(() => Math.random() - 0.5);
     const limit = args.limit || 10;
+
+    // Use Fisher-Yates shuffle for better randomization
+    const shuffled = [...questions];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    // Return unique questions up to the limit
     return shuffled.slice(0, Math.min(limit, shuffled.length));
   },
 });

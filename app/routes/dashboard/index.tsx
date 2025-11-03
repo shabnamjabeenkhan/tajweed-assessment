@@ -2,7 +2,7 @@
 import { TestEmailForm } from "~/components/dashboard/test-email-form";
 import { isFeatureEnabled, isServiceEnabled } from "../../../config";
 import { Link, useSearchParams, useLoaderData } from "react-router";
-import { BookOpen, Trophy, Target, Clock, Star, TrendingUp, Award, PlayCircle } from "lucide-react";
+import { BookOpen, Trophy, Target, Star, TrendingUp, Award, PlayCircle } from "lucide-react";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../convex/_generated/api";
 
@@ -84,7 +84,7 @@ export default function Page() {
 
           {/* Progress Overview Cards */}
           <div className="px-4 lg:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               <div className="rounded-xl p-6 border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
                 <div className="flex items-center justify-between mb-2">
                   <BookOpen className="size-8 text-blue-400" />
@@ -111,24 +111,10 @@ export default function Page() {
 
               <div className="rounded-xl p-6 border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
                 <div className="flex items-center justify-between mb-2">
-                  <Clock className="size-8 text-orange-400" />
-                  <span className="text-2xl font-bold text-orange-400">{stats.currentStreak}</span>
-                </div>
-                <h3 className="font-semibold text-white">Day Streak</h3>
-                <p className="text-sm text-neutral-400">
-                  {stats.currentStreak > 0 ? 'Keep it up!' : 'Start your streak!'}
-                </p>
-              </div>
-
-              <div className="rounded-xl p-6 border border-neutral-700/50" style={{ backgroundColor: '#1a1a1a' }}>
-                <div className="flex items-center justify-between mb-2">
                   <Award className="size-8 text-purple-400" />
                   <span className="text-2xl font-bold text-purple-400">{stats.badgesEarned}</span>
                 </div>
                 <h3 className="font-semibold text-white">Badges Earned</h3>
-                <p className="text-sm text-neutral-400">
-                  {stats.badgesEarned < 10 ? `${10 - stats.badgesEarned} more to unlock` : 'All unlocked!'}
-                </p>
               </div>
             </div>
           </div>
