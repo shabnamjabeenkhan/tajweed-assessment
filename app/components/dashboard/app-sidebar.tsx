@@ -44,12 +44,12 @@ const data = {
     },
     {
       title: "Idgham Rules",
-      url: "/quiz/idgham",
+      url: "/quiz/idghaam",
       intent: "accent" as const,
     },
     {
       title: "Ikhfa Rules",
-      url: "/quiz/ikhfa",
+      url: "/quiz/ikhfaa",
       intent: "warning" as const,
     },
   ],
