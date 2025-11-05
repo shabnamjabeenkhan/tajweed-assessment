@@ -141,7 +141,7 @@ export default function Page() {
                 </Link>
 
                 <Link
-                  to="/quiz/idgham"
+                  to="/quiz/idghaam"
                   className="group flex items-center gap-3 p-4 bg-neutral-800/30 border border-neutral-700/30 rounded-lg hover:bg-neutral-800/50 transition-colors"
                 >
                   <div className="size-3 rounded-full bg-purple-500"></div>
@@ -165,7 +165,7 @@ export default function Page() {
                 </Link>
 
                 <Link
-                  to="/quiz/ikhfa"
+                  to="/quiz/ikhfaa"
                   className="group flex items-center gap-3 p-4 bg-neutral-800/30 border border-neutral-700/30 rounded-lg hover:bg-neutral-800/50 transition-colors"
                 >
                   <div className="size-3 rounded-full bg-orange-500"></div>
