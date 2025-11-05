@@ -3,7 +3,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { BookOpen, PlayCircle, Star, Clock, Target } from "lucide-react";
+import { BookOpen, PlayCircle, Clock, Target, ArrowLeft } from "lucide-react";
 import { useQuery } from "convex/react";
 
 export async function loader() {
@@ -66,8 +66,18 @@ export default function QuizLibrary() {
           {/* Header */}
           <div className="px-4 lg:px-6">
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2">Quiz Library</h1>
-              <p className="text-neutral-400">Master Tajweed rules through interactive quizzes</p>
+              <div className="flex items-center gap-4 mb-4">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-600 text-neutral-300 hover:bg-neutral-800/60 transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Link>
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2">Quiz Library</h1>
+                  <p className="text-neutral-400">Master Tajweed rules through interactive quizzes</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -133,15 +143,6 @@ export default function QuizLibrary() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-neutral-400">Difficulty</span>
-                      <div className="flex items-center gap-1">
-                        {[1, 2, 3].map((i) => (
-                          <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                    </div>
-
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-neutral-400">Questions</span>
                       <span className="text-white">10-15</span>

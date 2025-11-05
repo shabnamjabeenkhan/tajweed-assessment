@@ -3,7 +3,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { BarChart3, Trophy, TrendingUp, Calendar, Eye, Target, Clock } from "lucide-react";
+import { BarChart3, Trophy, TrendingUp, Calendar, Eye, Target, Clock, ArrowLeft } from "lucide-react";
 
 export async function loader() {
   try {
@@ -75,8 +75,18 @@ export default function Results() {
           {/* Header */}
           <div className="px-4 lg:px-6">
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2">My Results</h1>
-              <p className="text-neutral-400">Track your progress and review quiz performance</p>
+              <div className="flex items-center gap-4 mb-4">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-600 text-neutral-300 hover:bg-neutral-800/60 transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Link>
+                <div>
+                  <h1 className="text-3xl font-bold text-white mb-2">My Results</h1>
+                  <p className="text-neutral-400">Track your progress and review quiz performance</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -145,16 +155,16 @@ export default function Results() {
                 <div className="space-y-4">
                   {attempts.map((attempt) => (
                     <Card key={attempt._id} className="border-neutral-700/50 hover:border-neutral-600/50 transition-colors" style={{ backgroundColor: '#1a1a1a' }}>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-3">
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                          <div className="space-y-2 flex-1">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                               <h3 className="font-semibold text-white">{attempt.rule?.title || 'Unknown Rule'}</h3>
                               <Badge variant="outline" className={getScoreBadgeColor(attempt.scorePercent || 0)}>
                                 {getScoreBadge(attempt.scorePercent || 0)}
                               </Badge>
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-neutral-400">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-neutral-400">
                               <div className="flex items-center gap-1">
                                 <Calendar className="h-4 w-4" />
                                 {new Date(attempt._creationTime).toLocaleDateString()}
@@ -166,9 +176,9 @@ export default function Results() {
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-4">
-                            <div className="text-right">
-                              <p className={`text-2xl font-bold ${getScoreColor(attempt.scorePercent || 0)}`}>
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                            <div className="text-left sm:text-right">
+                              <p className={`text-xl sm:text-2xl font-bold ${getScoreColor(attempt.scorePercent || 0)}`}>
                                 {attempt.scorePercent || 0}%
                               </p>
                               <p className="text-sm text-neutral-400">
@@ -178,10 +188,10 @@ export default function Results() {
 
                             <Link
                               to={`/results/${attempt._id}`}
-                              className="flex items-center gap-2 px-4 py-2 border border-neutral-600 text-neutral-300 rounded-lg hover:bg-neutral-800/60 transition-colors"
+                              className="flex items-center justify-center gap-2 px-4 py-2 border border-neutral-600 text-neutral-300 rounded-lg hover:bg-neutral-800/60 transition-colors"
                             >
                               <Eye className="h-4 w-4" />
-                              View Details
+                              <span className="sm:inline">View Details</span>
                             </Link>
                           </div>
                         </div>

@@ -1,8 +1,8 @@
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import { useState } from "react";
-import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { CheckCircle, XCircle, ArrowRight, ArrowLeft } from "lucide-react";
 
 // Route types
 type LoaderArgs = {
@@ -108,9 +108,19 @@ export default function ResultsPage() {
     <div className="min-h-screen text-white" style={{ backgroundColor: '#0a0a0a' }}>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Quiz Results</h1>
-          <p className="text-neutral-400">{attempt.rule?.title}</p>
+        <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <Link
+              to="/dashboard"
+              className="flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-600 text-neutral-300 hover:bg-neutral-800/60 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+            <div className="text-center flex-1">
+              <h1 className="text-3xl font-bold mb-2">Quiz Results</h1>
+              <p className="text-neutral-400">{attempt.rule?.title}</p>
+            </div>
+          </div>
 
           {/* Progress Bar */}
           <div className="mt-6 max-w-md mx-auto">
