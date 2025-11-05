@@ -27,76 +27,76 @@ export default function IntegrationsSection({
               <div className="order-2 lg:order-1">
                 <div className="relative p-4 sm:p-8">
                   <div className="mx-auto mb-0.5 sm:mb-4 flex w-fit justify-center gap-px xs:gap-0.5 sm:gap-3">
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           إِدْغَام
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Idgham
                         </div>
                       </div>
                     </GlowCard>
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           إِخْفَاء
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Ikhfa
                         </div>
                       </div>
                     </GlowCard>
                   </div>
                   <div className="mx-auto my-0.5 sm:my-4 flex w-fit justify-center gap-px xs:gap-0.5 sm:gap-3">
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           قَلْقَلَة
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Qalqalah
                         </div>
                       </div>
                     </GlowCard>
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           مَدّ
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Madd
                         </div>
                       </div>
                     </GlowCard>
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           غُنَّة
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Ghunna
                         </div>
                       </div>
                     </GlowCard>
                   </div>
                   <div className="mx-auto flex w-fit justify-center gap-px xs:gap-0.5 sm:gap-3">
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           نُون سَاكِنَة
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Noon Sakinah
                         </div>
                       </div>
                     </GlowCard>
-                    <GlowCard customSize width={95} height={95} glowColor="green" className="!w-[95px] !h-[95px] [--size:95]">
+                    <GlowCard customSize width={120} height={120} glowColor="green" className="!w-[70px] !h-[70px] [--size:70] [@media(min-width:361px)]:!w-[100px] [@media(min-width:361px)]:!h-[100px] [@media(min-width:361px)]:[--size:100] [@media(min-width:426px)]:!w-[120px] [@media(min-width:426px)]:!h-[120px] [@media(min-width:426px)]:[--size:120]">
                       <div className="flex flex-col items-center justify-center h-full">
-                        <div className="text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
+                        <div className="text-[9px] [@media(min-width:361px)]:text-xs sm:text-lg font-bold font-arabic" style={{ color: '#114b3c' }}>
                           تَنْوِين
                         </div>
-                        <div className="text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
+                        <div className="text-[7px] [@media(min-width:361px)]:text-[10px] sm:text-xs font-medium" style={{ color: '#114b3c' }}>
                           Tanween
                         </div>
                       </div>
