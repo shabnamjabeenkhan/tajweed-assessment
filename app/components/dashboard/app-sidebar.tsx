@@ -1,6 +1,5 @@
 import { Home, BookOpen, BarChart3, Settings, Star } from "lucide-react";
 import { Link } from "react-router";
-import { BrandIcon } from "./brand-icon";
 import { WorkspaceIcon } from "./workspace-icon";
 import {
   Sidebar,
@@ -83,10 +82,8 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <Link to="/" prefetch="viewport" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <BrandIcon className="size-8 text-white" />
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-white">Tajweed Master</span>
-                <span className="text-xs text-neutral-400">Assessment Platform</span>
+                <span className="text-lg font-bold text-white">Tajweed Simplified</span>
               </div>
             </Link>
           </SidebarMenuItem>

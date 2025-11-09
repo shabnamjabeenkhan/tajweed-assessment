@@ -14,7 +14,10 @@ export default function Page() {
   const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
 
   // Get dashboard stats in real-time
-  const stats = useQuery(api.quizAttempts.getDashboardStats, { userId: testUserId }) || {
+  const statsQuery = useQuery(api.quizAttempts.getDashboardStats, { userId: testUserId });
+
+  // Provide fallback stats while loading or on error
+  const stats = statsQuery ?? {
     quizzesCompleted: 0,
     averageScore: 0,
     currentStreak: 0,
@@ -27,6 +30,15 @@ export default function Page() {
   const errorMessage = searchParams.get('error_message');
   const score = searchParams.get('score');
   const attemptId = searchParams.get('attempt_id');
+
+  // Show loading state while query is loading
+  if (statsQuery === undefined) {
+    return (
+      <div className="flex flex-1 flex-col min-h-screen items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
+        <div className="text-white">Loading dashboard...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col min-h-screen" style={{ backgroundColor: '#0a0a0a' }}>
