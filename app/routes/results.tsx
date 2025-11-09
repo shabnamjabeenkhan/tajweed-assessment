@@ -1,51 +1,31 @@
-import { Link, useLoaderData } from "react-router";
-import { ConvexHttpClient } from "convex/browser";
+import { Link } from "react-router";
+import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { BarChart3, Trophy, TrendingUp, Calendar, Eye, Target, Clock, ArrowLeft } from "lucide-react";
 
-export async function loader() {
-  try {
-    const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
-    if (!convexUrl) {
-      throw new Error("VITE_CONVEX_URL environment variable is required");
-    }
-    const convexClient = new ConvexHttpClient(convexUrl);
-
-    // Use the test user ID for MVP
-    const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
-
-    // Get user's quiz attempts
-    const attemptsData = await convexClient.query(api.quizAttempts.getUserQuizHistory, {
-      userId: testUserId
-    });
-    const attempts = attemptsData.attempts;
-
-    // Get dashboard stats
-    const stats = await convexClient.query(api.quizAttempts.getDashboardStats, {
-      userId: testUserId
-    });
-
-    return { attempts, stats };
-  } catch (error) {
-    console.error("Error loading results:", error);
-    return {
-      attempts: [],
-      stats: {
-        quizzesCompleted: 0,
-        averageScore: 0,
-        currentStreak: 0,
-        badgesEarned: 0,
-        weeklyProgress: 0,
-        scoreImprovement: 0,
-      }
-    };
-  }
-}
-
 export default function Results() {
-  const { attempts, stats } = useLoaderData<typeof loader>();
+  // Use the test user ID for MVP
+  const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
+
+  // Get user's quiz attempts in real-time
+  const attemptsData = useQuery(api.quizAttempts.getUserQuizHistory, {
+    userId: testUserId
+  });
+  const attempts = attemptsData?.attempts || [];
+
+  // Get dashboard stats in real-time
+  const stats = useQuery(api.quizAttempts.getDashboardStats, {
+    userId: testUserId
+  }) || {
+    quizzesCompleted: 0,
+    averageScore: 0,
+    currentStreak: 0,
+    badgesEarned: 0,
+    weeklyProgress: 0,
+    scoreImprovement: 0,
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-400';

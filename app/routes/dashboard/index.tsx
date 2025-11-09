@@ -1,49 +1,27 @@
 "use client";
 import { TestEmailForm } from "~/components/dashboard/test-email-form";
 import { isFeatureEnabled, isServiceEnabled } from "../../../config";
-import { Link, useSearchParams, useLoaderData } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { BookOpen, Trophy, Target, Star, TrendingUp, Award, PlayCircle } from "lucide-react";
-import { ConvexHttpClient } from "convex/browser";
+import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-
-export async function loader() {
-  try {
-    // Setup Convex client
-    const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
-    if (!convexUrl) {
-      throw new Error("VITE_CONVEX_URL environment variable is required");
-    }
-    const convexClient = new ConvexHttpClient(convexUrl);
-
-    // Use the test user ID for MVP
-    const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
-
-    // Get dashboard stats
-    const stats = await convexClient.query(api.quizAttempts.getDashboardStats, {
-      userId: testUserId
-    });
-
-    return { stats };
-  } catch (error) {
-    console.error("Error loading dashboard stats:", error);
-    // Return default stats if there's an error
-    return {
-      stats: {
-        quizzesCompleted: 0,
-        averageScore: 0,
-        currentStreak: 0,
-        badgesEarned: 0,
-        weeklyProgress: 0,
-        scoreImprovement: 0,
-      }
-    };
-  }
-}
 
 export default function Page() {
   const emailEnabled = isFeatureEnabled('email') && isServiceEnabled('resend');
   const [searchParams] = useSearchParams();
-  const { stats } = useLoaderData<typeof loader>();
+
+  // Use the test user ID for MVP
+  const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
+
+  // Get dashboard stats in real-time
+  const stats = useQuery(api.quizAttempts.getDashboardStats, { userId: testUserId }) || {
+    quizzesCompleted: 0,
+    averageScore: 0,
+    currentStreak: 0,
+    badgesEarned: 0,
+    weeklyProgress: 0,
+    scoreImprovement: 0,
+  };
   const quizCompleted = searchParams.get('quiz_completed') === 'true';
   const quizError = searchParams.get('quiz_error') === 'true';
   const errorMessage = searchParams.get('error_message');
