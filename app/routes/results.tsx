@@ -1,24 +1,33 @@
 import { Link } from "react-router";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { BarChart3, Trophy, TrendingUp, Calendar, Eye, Target, Clock, ArrowLeft } from "lucide-react";
 
 export default function Results() {
-  // Use the test user ID for MVP
-  const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
+  // Get test user ID for MVP
+  const testUserId = useQuery(api.testUser.getTestUser);
+  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
 
-  // Get user's quiz attempts in real-time
-  const attemptsData = useQuery(api.quizAttempts.getUserQuizHistory, {
-    userId: testUserId
-  });
+  // Create test user if it doesn't exist
+  useEffect(() => {
+    if (testUserId === null) {
+      createTestUser();
+    }
+  }, [testUserId, createTestUser]);
+
+  // Get user's quiz attempts in real-time (only when we have a user)
+  const attemptsData = useQuery(api.quizAttempts.getUserQuizHistory,
+    testUserId ? { userId: testUserId } : "skip"
+  );
   const attempts = attemptsData?.attempts || [];
 
-  // Get dashboard stats in real-time
-  const stats = useQuery(api.quizAttempts.getDashboardStats, {
-    userId: testUserId
-  }) || {
+  // Get dashboard stats in real-time (only when we have a user)
+  const stats = useQuery(api.quizAttempts.getDashboardStats,
+    testUserId ? { userId: testUserId } : "skip"
+  ) || {
     quizzesCompleted: 0,
     averageScore: 0,
     currentStreak: 0,
@@ -47,6 +56,15 @@ export default function Results() {
     if (score >= 70) return 'text-yellow-600 border-yellow-600 bg-yellow-50';
     return 'text-red-600 border-red-600 bg-red-50';
   };
+
+  // Show loading state while user data is loading
+  if (testUserId === undefined) {
+    return (
+      <div className="flex flex-1 flex-col min-h-screen items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
+        <div className="text-white">Loading results...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1 flex-col min-h-screen" style={{ backgroundColor: '#0a0a0a' }}>

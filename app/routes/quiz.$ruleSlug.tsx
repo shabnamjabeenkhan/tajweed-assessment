@@ -74,8 +74,8 @@ export async function action(args: Route.ActionArgs) {
     // Get questions to calculate score
     const questions = await convexClient.query(api.questions.getByRule, { ruleId: rule._id });
 
-    // Use the test user we created for MVP
-    const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any; // Real user ID from database
+    // Get or create test user for MVP
+    const testUserId = await convexClient.mutation(api.testUser.getOrCreateTestUser, {});
 
     // Format answers for Convex function
     const formattedAnswers = answers.map(answer => ({

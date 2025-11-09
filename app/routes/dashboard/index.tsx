@@ -3,18 +3,29 @@ import { TestEmailForm } from "~/components/dashboard/test-email-form";
 import { isFeatureEnabled, isServiceEnabled } from "../../../config";
 import { Link, useSearchParams } from "react-router";
 import { BookOpen, Trophy, Target, Star, TrendingUp, Award, PlayCircle } from "lucide-react";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useEffect } from "react";
 
 export default function Page() {
   const emailEnabled = isFeatureEnabled('email') && isServiceEnabled('resend');
   const [searchParams] = useSearchParams();
 
-  // Use the test user ID for MVP
-  const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
+  // Get test user ID for MVP
+  const testUserId = useQuery(api.testUser.getTestUser);
+  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
 
-  // Get dashboard stats in real-time
-  const statsQuery = useQuery(api.quizAttempts.getDashboardStats, { userId: testUserId });
+  // Create test user if it doesn't exist
+  useEffect(() => {
+    if (testUserId === null) {
+      createTestUser();
+    }
+  }, [testUserId, createTestUser]);
+
+  // Get dashboard stats in real-time (only when we have a user)
+  const statsQuery = useQuery(api.quizAttempts.getDashboardStats,
+    testUserId ? { userId: testUserId } : "skip"
+  );
 
   // Provide fallback stats while loading or on error
   const stats = statsQuery ?? {
@@ -31,8 +42,8 @@ export default function Page() {
   const score = searchParams.get('score');
   const attemptId = searchParams.get('attempt_id');
 
-  // Show loading state while query is loading
-  if (statsQuery === undefined) {
+  // Show loading state while user or stats are loading
+  if (testUserId === undefined || (testUserId && statsQuery === undefined)) {
     return (
       <div className="flex flex-1 flex-col min-h-screen items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
         <div className="text-white">Loading dashboard...</div>
