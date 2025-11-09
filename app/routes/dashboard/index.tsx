@@ -45,6 +45,8 @@ export default function Page() {
   const [searchParams] = useSearchParams();
   const { stats } = useLoaderData<typeof loader>();
   const quizCompleted = searchParams.get('quiz_completed') === 'true';
+  const quizError = searchParams.get('quiz_error') === 'true';
+  const errorMessage = searchParams.get('error_message');
   const score = searchParams.get('score');
   const attemptId = searchParams.get('attempt_id');
 
@@ -76,6 +78,31 @@ export default function Page() {
                   >
                     <TrendingUp className="size-4" />
                     View Results
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quiz Error Message */}
+          {quizError && (
+            <div className="px-4 lg:px-6">
+              <div className="bg-gradient-to-r from-red-600/10 to-red-600/10 border border-red-500/20 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.963-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <h2 className="text-xl font-semibold text-red-400">Quiz Error</h2>
+                </div>
+                <p className="text-neutral-300 mb-4">
+                  {errorMessage || "There was an error submitting your quiz. Please try again."}
+                </p>
+                <div className="flex gap-3">
+                  <Link
+                    to="/dashboard"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Try Again
                   </Link>
                 </div>
               </div>

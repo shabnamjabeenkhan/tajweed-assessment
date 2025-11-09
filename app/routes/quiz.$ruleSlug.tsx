@@ -52,7 +52,7 @@ export async function action(args: Route.ActionArgs) {
   const answersJson = formData.get("answers") as string;
 
   if (!ruleSlug || !answersJson) {
-    throw new Error("Missing required data");
+    return redirect(`/dashboard?quiz_error=true&error_message=Missing required data`);
   }
 
   try {
@@ -61,14 +61,14 @@ export async function action(args: Route.ActionArgs) {
     // Setup Convex client
     const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
     if (!convexUrl) {
-      throw new Error("VITE_CONVEX_URL environment variable is required");
+      return redirect(`/dashboard?quiz_error=true&error_message=Configuration error`);
     }
     const convexClient = new ConvexHttpClient(convexUrl);
 
     // Get the rule by slug
     const rule = await convexClient.query(api.tajweedRules.getBySlug, { slug: ruleSlug });
     if (!rule) {
-      throw new Error("Rule not found");
+      return redirect(`/dashboard?quiz_error=true&error_message=Rule not found`);
     }
 
     // Get questions to calculate score
@@ -102,7 +102,8 @@ export async function action(args: Route.ActionArgs) {
     return redirect(`/dashboard?quiz_completed=true&score=${actualScore}&attempt_id=${attemptId}`);
   } catch (error) {
     console.error("Quiz submission error:", error);
-    throw new Error("Failed to submit quiz");
+    // Instead of throwing, redirect to dashboard with error state
+    return redirect(`/dashboard?quiz_error=true&error_message=Failed to submit quiz`);
   }
 }
 

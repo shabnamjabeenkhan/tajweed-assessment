@@ -9,7 +9,7 @@ interface QuizContainerProps {
   rule: TajweedRule;
   questions: QuizQuestion[];
   userId: string | null;
-  onSubmit: (answers: QuizAnswer[]) => Promise<void> | void;
+  onSubmit: (answers: QuizAnswer[]) => void;
 }
 
 export interface QuizAnswer {
@@ -65,12 +65,12 @@ export function QuizContainer({ rule, questions, onSubmit }: QuizContainerProps)
   };
 
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (isLastQuestion) {
       setIsSubmitting(true);
       setError(null);
       try {
-        await onSubmit(answers);
+        onSubmit(answers);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to submit quiz');
         setIsSubmitting(false);
