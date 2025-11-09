@@ -10,6 +10,7 @@ import { config, isFeatureEnabled } from "../../../config";
 const getMenuItems = () => {
   const items = [
   { name: "Home", href: "#hero" },
+  { name: "Demo", href: "/demo" },
   ];
 
   return items;

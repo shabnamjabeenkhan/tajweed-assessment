@@ -1,5 +1,6 @@
 import { Separator } from "~/components/ui/separator";
 import { SidebarTrigger } from "~/components/ui/sidebar";
+import { Link } from "react-router";
 
 export function SiteHeader() {
   return (
@@ -10,6 +11,14 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4 bg-neutral-700/50"
         />
+        <div className="flex-1 flex justify-end">
+          <Link
+            to="/demo"
+            className="text-sm font-medium text-neutral-400 hover:text-white transition-colors px-3 py-1"
+          >
+            Demo
+          </Link>
+        </div>
       </div>
     </header>
   );
