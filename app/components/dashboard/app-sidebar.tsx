@@ -1,6 +1,9 @@
 import { Home, BookOpen, BarChart3, Settings, Star } from "lucide-react";
 import { Link } from "react-router";
 import { WorkspaceIcon } from "./workspace-icon";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -70,12 +73,29 @@ export function AppSidebar({
   user: any;
   stats?: any;
 }) {
+  // Get test user ID for MVP
+  const testUserId = useQuery(api.testUser.getTestUser);
+  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
+
+  // Create test user if it doesn't exist
+  useEffect(() => {
+    if (testUserId === null) {
+      createTestUser();
+    }
+  }, [testUserId, createTestUser]);
+
+  // Get real-time stats (only when we have a user)
+  const realTimeStats = useQuery(api.quizAttempts.getDashboardStats,
+    testUserId ? { userId: testUserId } : "skip"
+  );
+
   const defaultStats = {
     quizzesCompleted: 0,
     averageScore: 0,
   };
 
-  const displayStats = stats || defaultStats;
+  // Use real-time stats if available, fallback to props stats, then default
+  const displayStats = realTimeStats || stats || defaultStats;
   return (
     <Sidebar collapsible="offcanvas" variant={variant} style={{ backgroundColor: '#1a1a1a' }} className="border-r border-neutral-700/50">
       <SidebarHeader className="border-b border-neutral-700/50 p-4" style={{ backgroundColor: '#1a1a1a' }}>
