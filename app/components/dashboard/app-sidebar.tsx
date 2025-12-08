@@ -73,20 +73,23 @@ export function AppSidebar({
   user: any;
   stats?: any;
 }) {
-  // Get test user ID for MVP
-  const testUserId = useQuery(api.testUser.getTestUser);
-  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
+  // Get current authenticated user
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const upsertUser = useMutation(api.users.upsertUser);
 
-  // Create test user if it doesn't exist
+  // Ensure user exists in database (creates if needed)
   useEffect(() => {
-    if (testUserId === null) {
-      createTestUser();
+    if (currentUser === null) {
+      // User not found, try to create/upsert
+      upsertUser().catch(() => {
+        // Silently fail if user creation fails (user might not be authenticated)
+      });
     }
-  }, [testUserId, createTestUser]);
+  }, [currentUser, upsertUser]);
 
   // Get real-time stats (only when we have a user)
   const realTimeStats = useQuery(api.quizAttempts.getDashboardStats,
-    testUserId ? { userId: testUserId } : "skip"
+    currentUser?._id ? { userId: currentUser._id } : "skip"
   );
 
   const defaultStats = {

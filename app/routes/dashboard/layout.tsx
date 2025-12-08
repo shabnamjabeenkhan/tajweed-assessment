@@ -1,7 +1,5 @@
 import { redirect, useLoaderData } from "react-router";
 import { AppSidebar } from "~/components/dashboard/app-sidebar";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../convex/_generated/api";
 import { SiteHeader } from "~/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import type { Route } from "./+types/layout";
@@ -43,28 +41,9 @@ export async function loader(args: Route.LoaderArgs) {
     }).users.getUser(userId);
   }
 
-  // 2. Fetch dashboard stats for sidebar
-  try {
-    const convexUrl = process.env.VITE_CONVEX_URL;
-    if (convexUrl) {
-      const convexClient = new ConvexHttpClient(convexUrl);
-      const testUserId = "jd76h3qestqer1vh269vd9wh317sme1k" as any;
-
-      stats = await convexClient.query(api.quizAttempts.getDashboardStats, {
-        userId: testUserId
-      });
-    }
-  } catch (error) {
-    console.error("Error loading dashboard stats in layout:", error);
-    stats = {
-      quizzesCompleted: 0,
-      averageScore: 0,
-      currentStreak: 0,
-      badgesEarned: 0,
-      weeklyProgress: 0,
-      scoreImprovement: 0,
-    };
-  }
+  // 2. Dashboard stats are now fetched client-side by components
+  // This ensures proper user context and avoids hardcoded test users
+  stats = null;
 
   return { user, authEnabled, paymentsEnabled, stats };
 }
