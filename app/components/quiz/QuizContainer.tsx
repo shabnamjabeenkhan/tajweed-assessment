@@ -54,6 +54,9 @@ export function QuizContainer({ rule, questions, onSubmit }: QuizContainerProps)
         : answer
     ));
 
+    // Reset feedback state when skipping
+    setShowFeedback(false);
+
     // Automatically advance to next question or submit if last question
     setTimeout(() => {
       if (isLastQuestion) {
