@@ -138,15 +138,34 @@ export default function QuizPage() {
   const handleQuizSubmit = async (answers: QuizAnswer[]) => {
     // Check Clerk authentication first
     if (authEnabled && !isSignedIn) {
-      console.error("User not authenticated in Clerk");
       navigate("/sign-in?redirect_url=" + encodeURIComponent(window.location.pathname));
       return;
     }
 
-    // Then check Convex user
-    if (!currentUser?._id) {
-      console.error("User not found in Convex database");
-      navigate("/dashboard?quiz_error=true&error_message=User account not ready. Please try again in a moment.");
+    // Get user with retry for auth sync
+    let user = currentUser;
+    if (!user?._id && authEnabled && isSignedIn) {
+      try {
+        user = await upsertUser();
+        // If still null, wait briefly for auth sync and try once more
+        if (!user?._id) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          user = await upsertUser();
+        }
+
+        if (!user?._id) {
+          navigate("/dashboard?quiz_error=true&error_message=Please refresh the page and try again.");
+          return;
+        }
+      } catch (error) {
+        navigate("/dashboard?quiz_error=true&error_message=Authentication error. Please sign out and back in.");
+        return;
+      }
+    }
+
+    // Fallback: use test user if auth disabled
+    if (!user?._id && !authEnabled) {
+      navigate("/dashboard?quiz_error=true&error_message=Authentication required to save quiz results.");
       return;
     }
 
@@ -168,7 +187,7 @@ export default function QuizPage() {
 
       // Save quiz attempt using authenticated user
       const attemptId = await createQuizAttempt({
-        userId: currentUser._id,
+        userId: user!._id,
         ruleId: rule._id as any,
         answers: formattedAnswers
       });
