@@ -29,11 +29,17 @@ export const debugAuthConfig = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
+    const envVar = process.env.VITE_CLERK_FRONTEND_API_URL || process.env.CLERK_FRONTEND_API_URL || "not set";
+    
     return {
       hasIdentity: !!identity,
       identitySubject: identity?.subject || null,
       identityIssuer: identity?.issuer || null,
-      envVar: process.env.VITE_CLERK_FRONTEND_API_URL || process.env.CLERK_FRONTEND_API_URL || "not set",
+      envVar: envVar,
+      // Compare issuer vs env var to help diagnose mismatch
+      issuerMatchesEnvVar: identity?.issuer === envVar,
+      // Show what domain should be configured
+      expectedDomain: envVar !== "not set" ? envVar : "https://clerk.tajweedsimplified.com",
     };
   },
 });
