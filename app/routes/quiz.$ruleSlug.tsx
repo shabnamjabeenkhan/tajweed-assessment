@@ -55,7 +55,7 @@ export default function QuizPage() {
   const { rule, questions } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const authEnabled = isFeatureEnabled('auth') && isServiceEnabled('clerk');
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, getToken } = useAuth();
 
   // Get current authenticated user from Convex
   const currentUser = useQuery(api.users.getCurrentUser);
@@ -80,6 +80,23 @@ export default function QuizPage() {
       return;
     }
 
+    // CRITICAL: Verify Clerk token is available before calling Convex mutations
+    if (authEnabled && isSignedIn && getToken) {
+      try {
+        const token = await getToken({ template: "convex" });
+        if (!token) {
+          console.error("[handleQuizSubmit] Clerk token is null - ConvexProviderWithClerk may not be passing tokens correctly");
+          navigate("/dashboard?quiz_error=true&error_message=Authentication token not available. Please sign out and sign back in.");
+          return;
+        }
+        console.log("[handleQuizSubmit] Clerk token obtained successfully, length:", token.length);
+      } catch (tokenError) {
+        console.error("[handleQuizSubmit] Failed to get Clerk token:", tokenError);
+        navigate("/dashboard?quiz_error=true&error_message=Failed to get authentication token. Please sign out and sign back in.");
+        return;
+      }
+    }
+
     // Get user with retry for auth sync
     let user = currentUser;
     if (!user?._id && authEnabled && isSignedIn) {
@@ -92,8 +109,10 @@ export default function QuizPage() {
         while (attempts < maxAttempts && !user?._id) {
           attempts++;
           try {
+            console.log(`[handleQuizSubmit] Attempting upsertUser (attempt ${attempts}/${maxAttempts})`);
             user = await upsertUser();
             if (user?._id) {
+              console.log("[handleQuizSubmit] User created/updated successfully:", user._id);
               break; // Success!
             }
           } catch (error) {

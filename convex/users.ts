@@ -9,6 +9,8 @@ export const getCurrentUser = query({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
+      // Log for debugging in production
+      console.log("[getCurrentUser] No identity found - user may not be authenticated");
       return null;
     }
 
@@ -19,6 +21,20 @@ export const getCurrentUser = query({
       .unique();
 
     return user || null;
+  },
+});
+
+// Debug query to check auth configuration
+export const debugAuthConfig = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    return {
+      hasIdentity: !!identity,
+      identitySubject: identity?.subject || null,
+      identityIssuer: identity?.issuer || null,
+      envVar: process.env.VITE_CLERK_FRONTEND_API_URL || process.env.CLERK_FRONTEND_API_URL || "not set",
+    };
   },
 });
 
@@ -51,9 +67,23 @@ export const upsertUser = mutation({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
+      // Enhanced logging for production debugging
       console.error("[upsertUser] No identity found - auth may not be configured correctly");
+      console.error("[upsertUser] This usually means:");
+      console.error("  1. Clerk JWT token is not being passed to Convex");
+      console.error("  2. Convex auth.config.ts domain doesn't match Clerk issuer URL");
+      console.error("  3. VITE_CLERK_FRONTEND_API_URL env var not set in Convex Dashboard");
+      console.error("[upsertUser] Check Convex Production logs for auth.config.ts domain value");
+      console.error("[upsertUser] Verify Clerk JWT template 'convex' exists and issuer URL matches");
       throw new Error("Authentication required. Please ensure you are signed in and try again.");
     }
+
+    console.log("[upsertUser] Identity found:", {
+      subject: identity.subject,
+      issuer: identity.issuer,
+      name: identity.name,
+      email: identity.email,
+    });
 
     // Check if user exists
     const existingUser = await ctx.db
