@@ -38,6 +38,9 @@ const routes: RouteConfig = [
     route("dashboard/settings", "routes/dashboard/settings.tsx"),
     route("dashboard/chat", "routes/dashboard/chat.tsx"),
   ]),
+
+  // Debug route (remove after debugging)
+  route("debug-auth", "routes/debug-auth.tsx"),
 ];
 
 export default routes satisfies RouteConfig;
