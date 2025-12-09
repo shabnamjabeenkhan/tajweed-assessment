@@ -4,6 +4,9 @@
 const clerkDomain =
   process.env.VITE_CLERK_FRONTEND_API_URL ||
   process.env.CLERK_FRONTEND_API_URL ||
+  // Try multiple common Clerk domains until we find the right one
+  "https://clerk.com" ||
+  "https://clerk.dev" ||
   "https://clerk.tajweedsimplified.com";
 
 // Log the domain being used (for debugging in production)
@@ -22,8 +25,23 @@ console.log("[auth.config.ts] ========================================");
 
 export default {
   providers: [
+    // Try the configured domain first
     {
       domain: clerkDomain,
+      applicationID: "convex",
+    },
+    // Fallback to common Clerk domains
+    {
+      domain: "https://clerk.dev",
+      applicationID: "convex",
+    },
+    {
+      domain: "https://clerk.com",
+      applicationID: "convex",
+    },
+    // Also try without subdomain
+    {
+      domain: "clerk.tajweedsimplified.com",
       applicationID: "convex",
     },
   ]
