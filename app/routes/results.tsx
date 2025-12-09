@@ -7,27 +7,30 @@ import { Badge } from "~/components/ui/badge";
 import { BarChart3, Trophy, TrendingUp, Calendar, Eye, Target, Clock, ArrowLeft } from "lucide-react";
 
 export default function Results() {
-  // Get test user ID for MVP
-  const testUserId = useQuery(api.testUser.getTestUser);
-  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
+  // Get current authenticated user
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const upsertUser = useMutation(api.users.upsertUser);
 
-  // Create test user if it doesn't exist
+  // Ensure user exists in database (creates if needed)
   useEffect(() => {
-    if (testUserId === null) {
-      createTestUser();
+    if (currentUser === null) {
+      upsertUser().catch(() => {
+        // Silently fail if user creation fails (user might not be authenticated)
+      });
     }
-  }, [testUserId, createTestUser]);
+  }, [currentUser, upsertUser]);
 
   // Get user's quiz attempts in real-time (only when we have a user)
   const attemptsData = useQuery(api.quizAttempts.getUserQuizHistory,
-    testUserId ? { userId: testUserId } : "skip"
+    currentUser?._id ? { userId: currentUser._id } : "skip"
   );
   const attempts = attemptsData?.attempts || [];
 
   // Get dashboard stats in real-time (only when we have a user)
-  const stats = useQuery(api.quizAttempts.getDashboardStats,
-    testUserId ? { userId: testUserId } : "skip"
-  ) || {
+  const statsQuery = useQuery(api.quizAttempts.getDashboardStats,
+    currentUser?._id ? { userId: currentUser._id } : "skip"
+  );
+  const stats = statsQuery ?? {
     quizzesCompleted: 0,
     averageScore: 0,
     currentStreak: 0,
@@ -58,7 +61,7 @@ export default function Results() {
   };
 
   // Show loading state while user data is loading
-  if (testUserId === undefined) {
+  if (currentUser === undefined || (currentUser && statsQuery === undefined)) {
     return (
       <div className="flex flex-1 flex-col min-h-screen items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
         <div className="text-white">Loading results...</div>

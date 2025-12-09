@@ -158,13 +158,21 @@ export const getAttemptDetails = query({
 export const getCurrentUserQuizLibraryStats = query({
   args: {},
   handler: async (ctx) => {
-    // Get total number of active rules first
-    const allRules = await ctx.db
-      .query("tajweedRules")
-      .withIndex("by_active", (q) => q.eq("isActive", true))
-      .collect();
-
-    const totalRules = allRules.length;
+    // Get only the four main rules
+    const mainRuleSlugs = ["ith-har", "idghaam", "iqlaab", "ikhfaa"];
+    const mainRules = await Promise.all(
+      mainRuleSlugs.map(slug =>
+        ctx.db
+          .query("tajweedRules")
+          .withIndex("by_slug", (q) => q.eq("slug", slug))
+          .first()
+      )
+    );
+    const activeMainRules = mainRules.filter((rule): rule is NonNullable<typeof rule> => 
+      rule !== null && rule.isActive
+    );
+    const totalRules = activeMainRules.length;
+    const mainRuleIds = new Set(activeMainRules.map(rule => rule._id));
 
     // Check if user is authenticated
     const identity = await ctx.auth.getUserIdentity();
@@ -192,16 +200,20 @@ export const getCurrentUserQuizLibraryStats = query({
       };
     }
 
-    // Get all unique rules that have been completed by the user
+    // Get all attempts for the user
     const attempts = await ctx.db
       .query("quizAttempts")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .collect();
 
-    // Get unique rule IDs that have been completed
-    const completedRuleIds = new Set(attempts.map(attempt => attempt.ruleId));
+    // Count only completed main rules
+    const completedMainRuleIds = new Set(
+      attempts
+        .map(attempt => attempt.ruleId)
+        .filter(ruleId => mainRuleIds.has(ruleId))
+    );
 
-    const completedRules = completedRuleIds.size;
+    const completedRules = completedMainRuleIds.size;
     const availableRules = totalRules - completedRules;
 
     return {
@@ -212,7 +224,7 @@ export const getCurrentUserQuizLibraryStats = query({
   },
 });
 
-// Get completed rule IDs for the current user
+// Get completed rule IDs for the current user (only main rules)
 export const getCurrentUserCompletedRules = query({
   args: {},
   handler: async (ctx) => {
@@ -232,14 +244,38 @@ export const getCurrentUserCompletedRules = query({
       return [];
     }
 
+    // Get only the four main rules
+    const mainRuleSlugs = ["ith-har", "idghaam", "iqlaab", "ikhfaa"];
+    const mainRules = await Promise.all(
+      mainRuleSlugs.map(slug =>
+        ctx.db
+          .query("tajweedRules")
+          .withIndex("by_slug", (q) => q.eq("slug", slug))
+          .first()
+      )
+    );
+    const mainRuleIds = new Set(
+      mainRules
+        .filter((rule): rule is NonNullable<typeof rule> => rule !== null)
+        .map(rule => rule._id)
+    );
+
     // Get all attempts for this user
     const attempts = await ctx.db
       .query("quizAttempts")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .collect();
 
-    // Return unique rule IDs
-    return Array.from(new Set(attempts.map(attempt => attempt.ruleId)));
+    // Return unique rule IDs, but only for main rules
+    const completedMainRuleIds = Array.from(
+      new Set(
+        attempts
+          .map(attempt => attempt.ruleId)
+          .filter(ruleId => mainRuleIds.has(ruleId))
+      )
+    );
+
+    return completedMainRuleIds;
   },
 });
 

@@ -7,6 +7,8 @@ import { ConvexHttpClient } from "convex/browser";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect } from "react";
+import { useAuth } from "@clerk/react-router";
+import { isFeatureEnabled, isServiceEnabled } from "../../config";
 
 export async function loader(args: Route.LoaderArgs) {
   const { ruleSlug } = args.params;
@@ -42,7 +44,8 @@ export async function loader(args: Route.LoaderArgs) {
     };
   } catch (error) {
     console.error("Error loading quiz data:", error);
-    throw new Response("Failed to load quiz", { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    throw new Response(`Failed to load quiz: ${errorMessage}`, { status: 500 });
   }
 }
 
@@ -113,23 +116,37 @@ export async function action(args: Route.ActionArgs) {
 export default function QuizPage() {
   const { rule, questions } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
+  const authEnabled = isFeatureEnabled('auth') && isServiceEnabled('clerk');
+  const { isSignedIn, userId: clerkUserId } = useAuth();
 
-  // Get test user ID for MVP
-  const testUserId = useQuery(api.testUser.getTestUser);
-  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
+  // Get current authenticated user from Convex
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const upsertUser = useMutation(api.users.upsertUser);
   const createQuizAttempt = useMutation(api.quizAttempts.createQuizAttempt);
 
-  // Create test user if it doesn't exist
+  // Ensure user exists in database (creates if needed)
   useEffect(() => {
-    if (testUserId === null) {
-      createTestUser();
+    // Only try to create user if Clerk says we're authenticated but Convex doesn't have the user
+    if (authEnabled && isSignedIn && currentUser === null) {
+      // User authenticated in Clerk but not in Convex DB, try to create/upsert
+      upsertUser().catch((error) => {
+        console.error("Failed to create user in Convex:", error);
+      });
     }
-  }, [testUserId, createTestUser]);
+  }, [authEnabled, isSignedIn, currentUser, upsertUser]);
 
   const handleQuizSubmit = async (answers: QuizAnswer[]) => {
-    if (!testUserId) {
-      console.error("User not authenticated");
-      navigate("/dashboard?quiz_error=true&error_message=User not authenticated");
+    // Check Clerk authentication first
+    if (authEnabled && !isSignedIn) {
+      console.error("User not authenticated in Clerk");
+      navigate("/sign-in?redirect_url=" + encodeURIComponent(window.location.pathname));
+      return;
+    }
+
+    // Then check Convex user
+    if (!currentUser?._id) {
+      console.error("User not found in Convex database");
+      navigate("/dashboard?quiz_error=true&error_message=User account not ready. Please try again in a moment.");
       return;
     }
 
@@ -149,9 +166,9 @@ export default function QuizPage() {
         skipped: answer.skipped
       }));
 
-      // Save quiz attempt using test user
+      // Save quiz attempt using authenticated user
       const attemptId = await createQuizAttempt({
-        userId: testUserId,
+        userId: currentUser._id,
         ruleId: rule._id as any,
         answers: formattedAnswers
       });
@@ -177,7 +194,7 @@ export default function QuizPage() {
           <QuizContainer
             rule={rule}
             questions={questions}
-            userId={testUserId || null}
+            userId={currentUser?._id || null}
             onSubmit={handleQuizSubmit}
           />
         </div>

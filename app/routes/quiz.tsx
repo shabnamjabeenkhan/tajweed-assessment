@@ -1,31 +1,13 @@
-import { Link, useLoaderData } from "react-router";
-import { ConvexHttpClient } from "convex/browser";
+import { Link } from "react-router";
 import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { BookOpen, PlayCircle, Clock, Target, ArrowLeft } from "lucide-react";
 import { useQuery } from "convex/react";
 
-export async function loader() {
-  try {
-    const convexUrl = process.env.VITE_CONVEX_URL || import.meta.env.VITE_CONVEX_URL;
-    if (!convexUrl) {
-      throw new Error("VITE_CONVEX_URL environment variable is required");
-    }
-    const convexClient = new ConvexHttpClient(convexUrl);
-
-    // Get all active tajweed rules
-    const rules = await convexClient.query(api.tajweedRules.getActiveRules);
-
-    return { rules };
-  } catch (error) {
-    console.error("Error loading quiz library:", error);
-    return { rules: [] };
-  }
-}
-
 export default function QuizLibrary() {
-  const { rules } = useLoaderData<typeof loader>();
+  // Get only the four main rules
+  const rules = useQuery(api.tajweedRules.getMainRules) || [];
 
   // Get quiz completion stats for the current user
   const completionStats = useQuery(api.quizAttempts.getCurrentUserQuizLibraryStats);
@@ -40,11 +22,9 @@ export default function QuizLibrary() {
 
   const ruleColors = {
     'ith-har': 'blue',
-    'idgham': 'purple',
+    'idghaam': 'purple',
     'iqlaab': 'green',
-    'ikhfa': 'orange',
-    'ghunna': 'yellow',
-    'qalqalah': 'red'
+    'ikhfaa': 'orange',
   };
 
   const getColorClasses = (slug: string) => {
