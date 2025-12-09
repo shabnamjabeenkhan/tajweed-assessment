@@ -1,8 +1,9 @@
 // Get Clerk issuer domain from environment variable
 // Use VITE_CLERK_FRONTEND_API_URL (set in Convex Dashboard)
 // IMPORTANT: The domain must match EXACTLY what Clerk sends in the JWT token's "iss" claim
-const clerkDomain = 
-  process.env.VITE_CLERK_FRONTEND_API_URL || 
+const clerkDomain =
+  process.env.VITE_CLERK_FRONTEND_API_URL ||
+  process.env.CLERK_FRONTEND_API_URL ||
   "https://clerk.tajweedsimplified.com";
 
 // Log the domain being used (for debugging in production)
