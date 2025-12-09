@@ -84,19 +84,41 @@ export default function QuizPage() {
     let user = currentUser;
     if (!user?._id && authEnabled && isSignedIn) {
       try {
-        user = await upsertUser();
-        // If still null, wait briefly for auth sync and try once more
-        if (!user?._id) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          user = await upsertUser();
+        // Try to create/upsert user with retries
+        let attempts = 0;
+        const maxAttempts = 3;
+        const delayMs = 1000;
+
+        while (attempts < maxAttempts && !user?._id) {
+          attempts++;
+          try {
+            user = await upsertUser();
+            if (user?._id) {
+              break; // Success!
+            }
+          } catch (error) {
+            console.error(`[handleQuizSubmit] upsertUser attempt ${attempts} failed:`, error);
+            // If it's an auth error, don't retry
+            if (error instanceof Error && error.message.includes("Authentication required")) {
+              throw error;
+            }
+          }
+
+          // Wait before retry (exponential backoff)
+          if (attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, delayMs * attempts));
+          }
         }
 
         if (!user?._id) {
-          navigate("/dashboard?quiz_error=true&error_message=Please refresh the page and try again.");
+          console.error("[handleQuizSubmit] Failed to create user after", maxAttempts, "attempts");
+          navigate("/dashboard?quiz_error=true&error_message=Unable to authenticate. Please sign out and sign back in, then try again.");
           return;
         }
       } catch (error) {
-        navigate("/dashboard?quiz_error=true&error_message=Authentication error. Please sign out and back in.");
+        console.error("[handleQuizSubmit] User creation error:", error);
+        const errorMsg = error instanceof Error ? error.message : "Authentication error";
+        navigate(`/dashboard?quiz_error=true&error_message=${encodeURIComponent(errorMsg)}`);
         return;
       }
     }
@@ -139,8 +161,11 @@ export default function QuizPage() {
       // Navigate to dashboard with success message
       navigate(`/dashboard?quiz_completed=true&score=${score}&attempt_id=${attemptId}`);
     } catch (error) {
-      console.error("Quiz submission error:", error);
-      navigate("/dashboard?quiz_error=true&error_message=Failed to submit quiz");
+      console.error("[handleQuizSubmit] Quiz submission error:", error);
+      const errorMsg = error instanceof Error 
+        ? error.message 
+        : "Failed to submit quiz. Please try again.";
+      navigate(`/dashboard?quiz_error=true&error_message=${encodeURIComponent(errorMsg)}`);
     }
   };
 

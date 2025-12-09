@@ -51,7 +51,8 @@ export const upsertUser = mutation({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      return null;
+      console.error("[upsertUser] No identity found - auth may not be configured correctly");
+      throw new Error("Authentication required. Please ensure you are signed in and try again.");
     }
 
     // Check if user exists
