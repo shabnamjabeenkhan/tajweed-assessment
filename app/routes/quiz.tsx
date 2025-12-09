@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { BookOpen, PlayCircle, Clock, Target, ArrowLeft } from "lucide-react";
+import { BookOpen, Clock, Target, ArrowLeft } from "lucide-react";
 import { useQuery } from "convex/react";
 
 export default function QuizLibrary() {
@@ -135,13 +135,8 @@ export default function QuizLibrary() {
 
                     <Link
                       to={`/quiz/${rule.slug}`}
-                      className={`flex items-center justify-center gap-2 w-full px-4 py-2 rounded-lg transition-all duration-200 ${
-                        isRuleCompleted(rule._id)
-                          ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
-                          : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
-                      }`}
+                      className="flex items-center justify-center w-full px-4 py-2 bg-white text-black rounded-lg transition-all duration-200 hover:bg-gray-100"
                     >
-                      <PlayCircle className="h-4 w-4" />
                       {isRuleCompleted(rule._id) ? "Retake Quiz" : "Start Quiz"}
                     </Link>
                   </CardContent>

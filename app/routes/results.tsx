@@ -54,10 +54,10 @@ export default function Results() {
   };
 
   const getScoreBadgeColor = (score: number) => {
-    if (score >= 90) return 'text-green-600 border-green-600 bg-green-50';
-    if (score >= 80) return 'text-blue-600 border-blue-600 bg-blue-50';
-    if (score >= 70) return 'text-yellow-600 border-yellow-600 bg-yellow-50';
-    return 'text-red-600 border-red-600 bg-red-50';
+    if (score >= 90) return 'bg-[#1e4d05] text-white border-[#1e4d05]';
+    if (score >= 80) return 'bg-[#0b2e7f] text-white border-[#0b2e7f]';
+    if (score >= 70) return 'bg-yellow-600 text-white border-yellow-600';
+    return 'bg-[#7f220b] text-white border-[#7f220b]';
   };
 
   // Show loading state while user data is loading
@@ -161,7 +161,7 @@ export default function Results() {
                           <div className="space-y-2 flex-1">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                               <h3 className="font-semibold text-white">{attempt.rule?.title || 'Unknown Rule'}</h3>
-                              <Badge variant="outline" className={getScoreBadgeColor(attempt.scorePercent || 0)}>
+                              <Badge className={getScoreBadgeColor(attempt.scorePercent || 0)}>
                                 {getScoreBadge(attempt.scorePercent || 0)}
                               </Badge>
                             </div>

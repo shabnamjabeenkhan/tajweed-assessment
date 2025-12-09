@@ -250,7 +250,7 @@ export function QuizContainer({ rule, questions, onSubmit }: QuizContainerProps)
       {/* Exit Confirmation Dialog */}
       {showExitDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 max-w-md mx-4">
+          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-md mx-4">
             <h3 className="text-lg font-semibold text-white mb-3">Exit Quiz?</h3>
             <p className="text-gray-400 mb-6">
               Are you sure you want to exit? Your progress will be lost.

@@ -84,10 +84,10 @@ export default function ResultsPage() {
 
   // Calculate performance level
   const getPerformanceLevel = (score: number) => {
-    if (score >= 90) return { level: "excellent", color: "text-green-400", message: "Outstanding! You've mastered this rule!" };
-    if (score >= 70) return { level: "good", color: "text-blue-400", message: "Great job! You're on the right track!" };
+    if (score >= 90) return { level: "excellent", color: "text-[#1e4d05]", message: "Outstanding! You've mastered this rule!" };
+    if (score >= 70) return { level: "good", color: "text-[#0b2e7f]", message: "Great job! You're on the right track!" };
     if (score >= 50) return { level: "needs-work", color: "text-yellow-400", message: "Good effort! Let's work on a few areas." };
-    return { level: "struggling", color: "text-red-400", message: "Every expert was once a beginner!" };
+    return { level: "struggling", color: "text-[#7f220b]", message: "Every expert was once a beginner!" };
   };
 
   const toggleExplanation = (questionId: string) => {
@@ -131,9 +131,9 @@ export default function ResultsPage() {
             <div className="w-full bg-neutral-700 rounded-full h-3">
               <div
                 className={`h-3 rounded-full transition-all duration-1000 ${
-                  attempt.scorePercent >= 90 ? 'bg-green-500' :
-                  attempt.scorePercent >= 70 ? 'bg-blue-500' :
-                  attempt.scorePercent >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                  attempt.scorePercent >= 90 ? 'bg-[#1e4d05]' :
+                  attempt.scorePercent >= 70 ? 'bg-[#0b2e7f]' :
+                  attempt.scorePercent >= 50 ? 'bg-yellow-500' : 'bg-[#7f220b]'
                 }`}
                 style={{ width: `${attempt.scorePercent}%` }}
               />
@@ -160,9 +160,9 @@ export default function ResultsPage() {
           <div className="w-full bg-neutral-700 rounded-full h-3 mb-6">
             <div
               className={`h-3 rounded-full transition-all duration-1000 ${
-                attempt.scorePercent >= 90 ? 'bg-green-500' :
-                attempt.scorePercent >= 70 ? 'bg-blue-500' :
-                attempt.scorePercent >= 50 ? 'bg-yellow-500' : 'bg-red-500'
+                attempt.scorePercent >= 90 ? 'bg-[#1e4d05]' :
+                attempt.scorePercent >= 70 ? 'bg-[#0b2e7f]' :
+                attempt.scorePercent >= 50 ? 'bg-yellow-500' : 'bg-[#7f220b]'
               }`}
               style={{ width: `${attempt.scorePercent}%` }}
             />
@@ -193,9 +193,9 @@ export default function ResultsPage() {
                           <span className="text-2xl text-neutral-300">-</span>
                         </div>
                       ) : isCorrect ? (
-                        <CheckCircle className="w-16 h-16 text-green-400" />
+                        <CheckCircle className="w-16 h-16 text-[#1e4d05]" />
                       ) : (
-                        <XCircle className="w-16 h-16 text-red-400" />
+                        <XCircle className="w-16 h-16 text-[#7f220b]" />
                       )}
                     </div>
 
@@ -203,8 +203,8 @@ export default function ResultsPage() {
                       answer.skipped
                         ? 'text-neutral-400'
                         : isCorrect
-                          ? 'text-green-300'
-                          : 'text-red-300'
+                          ? 'text-[#1e4d05]'
+                          : 'text-[#7f220b]'
                     }`}>
                       Question {index + 1} - {answer.skipped ? 'Skipped' : isCorrect ? 'Correct!' : 'Incorrect'}
                     </h1>
@@ -237,8 +237,8 @@ export default function ResultsPage() {
                           </h3>
                           <div className={`p-4 rounded-lg border-2 ${
                             isCorrect
-                              ? 'bg-green-950/20 border-green-500'
-                              : 'bg-red-950/20 border-red-500'
+                              ? 'bg-[#1e4d05]/20 border-[#1e4d05]'
+                              : 'bg-[#7f220b]/20 border-[#7f220b]'
                           }`}>
                             <p className="text-white font-medium">
                               {answer.question?.options[answer.selectedOptionIndex || 0]}
@@ -251,7 +251,7 @@ export default function ResultsPage() {
                             <h3 className="text-sm font-semibold text-neutral-400 uppercase tracking-wide">
                               Correct Answer
                             </h3>
-                            <div className="p-4 rounded-lg border-2 bg-green-950/20 border-green-500">
+                            <div className="p-4 rounded-lg border-2 bg-[#1e4d05]/20 border-[#1e4d05]">
                               <p className="text-white font-medium">
                                 {answer.question?.options[answer.question?.correctOptionIndex || 0]}
                               </p>
