@@ -2,26 +2,6 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    // Get the user's identity from the auth context
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      return null;
-    }
-
-    // Check if we've already stored this identity before
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) => q.eq("tokenIdentifier", identity.subject))
-      .unique();
-
-    return user || null;
-  },
-});
-
 export const findUserByToken = query({
   args: { tokenIdentifier: v.string() },
   handler: async (ctx, args) => {

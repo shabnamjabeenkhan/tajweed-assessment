@@ -11,23 +11,20 @@ export default function Page() {
   const emailEnabled = isFeatureEnabled('email') && isServiceEnabled('resend');
   const [searchParams] = useSearchParams();
 
-  // Get current authenticated user
-  const currentUser = useQuery(api.users.getCurrentUser);
-  const upsertUser = useMutation(api.users.upsertUser);
+  // Get test user ID for MVP
+  const testUserId = useQuery(api.testUser.getTestUser);
+  const createTestUser = useMutation(api.testUser.getOrCreateTestUser);
 
-  // Ensure user exists in database (creates if needed)
+  // Create test user if it doesn't exist
   useEffect(() => {
-    if (currentUser === null) {
-      // User not found, try to create/upsert
-      upsertUser().catch(() => {
-        // Silently fail if user creation fails (user might not be authenticated)
-      });
+    if (testUserId === null) {
+      createTestUser();
     }
-  }, [currentUser, upsertUser]);
+  }, [testUserId, createTestUser]);
 
   // Get dashboard stats in real-time (only when we have a user)
   const statsQuery = useQuery(api.quizAttempts.getDashboardStats,
-    currentUser?._id ? { userId: currentUser._id } : "skip"
+    testUserId ? { userId: testUserId } : "skip"
   );
 
   // Provide fallback stats while loading or on error
@@ -46,7 +43,7 @@ export default function Page() {
   const attemptId = searchParams.get('attempt_id');
 
   // Show loading state while user or stats are loading
-  if (currentUser === undefined || (currentUser && statsQuery === undefined)) {
+  if (testUserId === undefined || (testUserId && statsQuery === undefined)) {
     return (
       <div className="flex flex-1 flex-col min-h-screen items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
         <div className="text-white">Loading dashboard...</div>
